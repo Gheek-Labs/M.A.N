@@ -1,0 +1,5 @@
+minima/data/
+*.class
+*.log
+*.jar.original
+.DS_Store
