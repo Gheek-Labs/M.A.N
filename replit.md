@@ -11,10 +11,17 @@ A one-click, agent-friendly, headless Minima blockchain node setup. The node run
 │   ├── minima.jar     # Minima node JAR
 │   ├── start.sh       # Node startup script
 │   ├── cli.sh         # Agent-friendly CLI wrapper
+│   ├── get_maxima.sh  # Get current Maxima address
+│   ├── moltid_*.sh    # MoltID identity scripts
+│   ├── AGENT_QUICKSTART.md  # Agent operations guide
 │   ├── COMMANDS.md    # Full RPC command reference
 │   └── data/          # Node data directory (gitignored)
 └── README.md          # Documentation
 ```
+
+## MoltID - Stable Agent Identity
+MoltID provides a reachable, stable identity that survives restarts/IP changes.
+Order: moltid_setup_mls.sh → moltid_register_permanent.sh → moltid_lockdown_contacts.sh → moltid_claim.sh
 
 ## Quick Start
 1. Run `./bootstrap.sh` to initialize

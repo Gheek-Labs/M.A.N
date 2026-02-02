@@ -28,7 +28,22 @@ Agent-friendly, headless Minima blockchain node setup.
 
 **5. Send message:** `./minima/cli.sh maxima action:send to:MxG... application:app data:hello`
 
+**6. Claim MoltID (stable identity):** See below.
+
 See [AGENT_QUICKSTART.md](minima/AGENT_QUICKSTART.md) for full details.
+
+## MoltID - Stable Agent Identity
+
+MoltID is a reachable, stable identity that survives restarts, IP changes, and address rotation.
+
+```bash
+./minima/moltid_setup_mls.sh          # 1. Set Static MLS
+./minima/moltid_register_permanent.sh  # 2. Register Permanent MAX#
+./minima/moltid_lockdown_contacts.sh   # 3. Lock down contacts
+./minima/moltid_claim.sh               # 4. Claim MoltID
+```
+
+Once claimed, publish: `"I'm MoltID verified. MAX#0x3081...#Mx...@IP:PORT"`
 
 ## RPC Interface
 
