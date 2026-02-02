@@ -1,0 +1,77 @@
+Below is a clean, drop-in modification to moltid_init.sh that does exactly this:
+
+If the wizard auto-selects community MLS, it prints one single command the agent can run later (on a server) to “graduate to sovereignty” (self-MLS).
+
+Because “self-MLS” requires the node’s own p2pidentity, the single command should be something they can run on the server instance without needing to copy/paste anything:
+
+✅ Graduation command (single line):
+
+./minima/cli.sh maxextra action:staticmls host:$(./minima/cli.sh maxima | jq -r '.response.p2pidentity')
+
+
+That sets static MLS to the node’s current p2pidentity (i.e., itself).
+
+1) Add this helper in your wizard (optional but tidy)
+
+Somewhere near your helper functions:
+
+print_graduate_command() {
+  local cli="$1"
+  echo ""
+  echo "------------------------------------------------------------"
+  echo "Upgrade to TRUE SOVEREIGNTY later (run on a SERVER instance):"
+  echo "------------------------------------------------------------"
+  echo "${cli} maxextra action:staticmls host:\$(${cli} maxima | jq -r '.response.p2pidentity')"
+  echo ""
+  echo "After switching to self-MLS, re-register your Permanent MAX# on the new MLS:"
+  echo "  (run on the MLS node)  maxextra action:addpermanent publickey:<your-primary-publickey>"
+  echo ""
+}
+
+
+Notes:
+
+You asked for one single command: that’s the first line above.
+
+I also print the next necessary step (addpermanent) because otherwise they’ll switch MLS and wonder why MAX# isn’t reachable. But it’s still just explanatory text, not another “command requirement”.
+
+2) Call it only when community MLS is selected
+
+In your Step 2 logic, find the branch:
+
+elif [[ "$MLS_MODE" == "community" ]]; then
+  ...
+  HOST="$COMMUNITY_MLS_HOST"
+
+
+Immediately after setting HOST, add:
+
+print_graduate_command "$CLI"
+
+
+So it becomes:
+
+elif [[ "$MLS_MODE" == "community" ]]; then
+  echo "ℹ️ Selecting COMMUNITY MLS route (recommended for non-server environments)."
+  echo "Using community MLS host:"
+  echo "  $COMMUNITY_MLS_HOST"
+  echo ""
+  echo "You can upgrade to full sovereignty later by running your own MLS server."
+  HOST="$COMMUNITY_MLS_HOST"
+
+  print_graduate_command "$CLI"
+
+3) The final output UX (what the user sees)
+
+When the wizard chooses community MLS, it prints:
+
+“You’re using community MLS”
+
+then:
+
+Upgrade to TRUE SOVEREIGNTY later (run on a SERVER instance):
+
+./minima/cli.sh maxextra action:staticmls host:$(./minima/cli.sh maxima | jq -r '.response.p2pidentity')
+
+
+That’s the exact “single command” they can run later.

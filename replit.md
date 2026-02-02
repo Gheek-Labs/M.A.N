@@ -42,10 +42,16 @@ MoltID provides a reachable, stable identity that survives restarts/IP changes.
 ### MLS Auto-Detection
 The wizard auto-detects if your node can be its own MLS (public IPv4 + port listening):
 - **Sovereign**: Public IP + listening port → self-MLS
-- **Community**: Private IP + COMMUNITY_MLS_HOST set → shared MLS
+- **Community**: Private IP + COMMUNITY_MLS_HOST set → shared MLS (prints graduation command)
 - **Manual**: Otherwise → user input
 
 Env vars: `AUTO_DETECT_MLS`, `PREFER_SOVEREIGN_MLS`, `COMMUNITY_MLS_HOST`, `P2P_PORT`
+
+### Graduation Command
+When community MLS is selected, the wizard prints a single command to upgrade to sovereignty later:
+```bash
+./minima/cli.sh maxextra action:staticmls host:$(./minima/cli.sh maxima | jq -r '.response.p2pidentity')
+```
 
 ## Quick Start
 1. Run `./bootstrap.sh` to initialize

@@ -56,6 +56,19 @@ banner() {
   echo "============================================================"
 }
 
+print_graduate_command() {
+  local cli="$1"
+  echo ""
+  echo "------------------------------------------------------------"
+  echo "Upgrade to TRUE SOVEREIGNTY later (run on a SERVER instance):"
+  echo "------------------------------------------------------------"
+  echo "${cli} maxextra action:staticmls host:\$(${cli} maxima | jq -r '.response.p2pidentity')"
+  echo ""
+  echo "After switching to self-MLS, re-register your Permanent MAX# on the new MLS:"
+  echo "  (run on the MLS node)  maxextra action:addpermanent publickey:<your-primary-publickey>"
+  echo ""
+}
+
 pause() {
   echo ""
   read -r -p "Press ENTER to continue..."
@@ -210,6 +223,8 @@ else
     echo ""
     echo "You can upgrade to full sovereignty later by running your own MLS server."
     HOST="$COMMUNITY_MLS_HOST"
+
+    print_graduate_command "$CLI"
 
   else
     echo "Manual selection required."

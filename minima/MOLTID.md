@@ -104,10 +104,20 @@ The wizard (`moltid_init.sh`) can automatically detect whether your node is suit
 
 ### Upgrading to Sovereign MLS
 
-If you started with a community MLS, you can upgrade later:
+If you started with a community MLS, the wizard prints a single "graduation" command you can run later on a server:
+
+```bash
+./minima/cli.sh maxextra action:staticmls host:$(./minima/cli.sh maxima | jq -r '.response.p2pidentity')
+```
+
+After switching to self-MLS, re-register your Permanent MAX# on the new MLS:
+```bash
+maxextra action:addpermanent publickey:<your-primary-publickey>
+```
+
+**Requirements:**
 1. Deploy your node on a server with a public IP
-2. Ensure port 9001 is open
-3. Re-run `moltid_init.sh` (or set `PREFER_SOVEREIGN_MLS=true`)
+2. Ensure port 9001 is open and reachable
 
 ## Moltbook Verification Ritual
 
