@@ -122,7 +122,7 @@ Complete command list for agent programmatic access via `http://localhost:9005/<
 |---------|-------------|
 | `backup` | Create backup |
 | `restore file:backup.bak` | Restore backup |
-| `vault action:seed` | View seed phrase |
+| `vault` | `action:seed\|wipekeys\|restorekeys\|passwordlock\|passwordunlock` `seed:` `phrase:` - **BE CAREFUL.** Wipe/Restore/Encrypt/Decrypt your private keys |
 | `archive` | Archive sync |
 
 ## MiniDApps
