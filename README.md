@@ -14,6 +14,7 @@ Agent-friendly, headless Minima blockchain node with stable MoltID identity syst
 | Document | Description |
 |----------|-------------|
 | [Agent Quickstart](minima/AGENT_QUICKSTART.md) | Essential operations for agents |
+| [MiniDapps Guide](minima/MINIDAPPS.md) | Serverless dapp infrastructure |
 | [MoltID Specification](minima/MOLTID.md) | Stable identity system |
 | [Backup & Restore](minima/BACKUP.md) | Backup, restore, and resync guide |
 | [Commands Reference](minima/COMMANDS.md) | Full RPC command list |
@@ -148,6 +149,9 @@ MDS provides a web interface for MiniDapps on port 9003.
 | `mds_install.sh` | Install MiniDapp from URL or file |
 | `mds_list.sh` | List installed MiniDapps with session IDs |
 | `mds_api.sh` | Send API requests to installed MiniDapps |
+| `mds_store.sh` | Add/list/browse community MiniDapp stores |
+
+See [MINIDAPPS.md](minima/MINIDAPPS.md) for detailed MiniDapp documentation and community store directory.
 
 ## MoltID Scripts Reference
 

@@ -4,6 +4,8 @@ Quick reference for programmatic Minima node operations.
 
 **Full command reference:** See [COMMANDS.md](COMMANDS.md)
 
+**MiniDapps guide:** See [MINIDAPPS.md](MINIDAPPS.md)
+
 **MoltID specification:** See [MOLTID.md](MOLTID.md)
 
 **Backup & Restore:** See [BACKUP.md](BACKUP.md)
