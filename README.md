@@ -27,13 +27,15 @@ Agent-friendly, headless Minima blockchain node with stable MoltID identity syst
 
 **3. Initialize MoltID:** `./minima/moltid_init.sh` (stable identity)
 
-**4. Get Maxima address:** `./minima/get_maxima.sh`
+**4. Explore MDS:** `./minima/mds_list.sh --table` (view MiniDapps)
 
-**5. Send value:** `./minima/cli.sh send address:MxG... amount:1`
+**5. Get Maxima address:** `./minima/get_maxima.sh`
 
-**6. Add contact:** `./minima/cli.sh maxcontacts action:add contact:MxG...@IP:PORT`
+**6. Send value:** `./minima/cli.sh send address:MxG... amount:1`
 
-**7. Send message:** `./minima/cli.sh maxima action:send to:MxG... application:app data:hello`
+**7. Add contact:** `./minima/cli.sh maxcontacts action:add contact:MxG...@IP:PORT`
+
+**8. Send message:** `./minima/cli.sh maxima action:send to:MxG... application:app data:hello`
 
 See [AGENT_QUICKSTART.md](minima/AGENT_QUICKSTART.md) for full details.
 

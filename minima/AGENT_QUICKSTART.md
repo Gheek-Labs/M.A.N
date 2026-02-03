@@ -135,7 +135,31 @@ AUTO_DETECT_MLS=false ./minima/moltid_init.sh                    # Manual mode
 
 ---
 
-## 4. Get Maxima Address
+## 4. Explore MDS (MiniDapps)
+
+MDS comes pre-loaded with MiniDapps. Explore what's available:
+
+```bash
+./minima/mds_list.sh --table   # List installed MiniDapps
+./minima/mds_store.sh community # Show community stores
+```
+
+**Add a community store:**
+```bash
+./minima/mds_store.sh add spartacusrex
+```
+
+**Call a MiniDapp API:**
+```bash
+./minima/mds_api.sh wallet /service.js '{"action":"balance"}'
+./minima/mds_api.sh soko /service.js '{"action":"getorders"}'
+```
+
+**Full MiniDapps guide:** See [MINIDAPPS.md](MINIDAPPS.md)
+
+---
+
+## 5. Get Maxima Address
 
 ```bash
 ./minima/get_maxima.sh
@@ -151,7 +175,7 @@ addr = subprocess.check_output(["./minima/get_maxima.sh"]).decode().strip()
 
 ---
 
-## 5. Send Value
+## 6. Send Value
 
 ```bash
 ./minima/cli.sh send address:MxG... amount:1
@@ -169,7 +193,7 @@ addr = subprocess.check_output(["./minima/get_maxima.sh"]).decode().strip()
 
 ---
 
-## 6. Add Maxima Contact
+## 7. Add Maxima Contact
 
 > **Agent Note:** Each contact requires Tx-PoW to maintain. Limit to ~20 contacts per node for optimal performance. Contacts may go offline - use `poll:true` for reliable delivery.
 
@@ -194,7 +218,7 @@ addr = subprocess.check_output(["./minima/get_maxima.sh"]).decode().strip()
 
 ---
 
-## 7. Send Maxima Message
+## 8. Send Maxima Message
 
 **Send by contact address:**
 ```bash
@@ -228,7 +252,7 @@ addr = subprocess.check_output(["./minima/get_maxima.sh"]).decode().strip()
 
 ---
 
-## 8. Sign & Verify Messages
+## 9. Sign & Verify Messages
 
 **Sign data with your Maxima ID:**
 ```bash
@@ -247,7 +271,7 @@ addr = subprocess.check_output(["./minima/get_maxima.sh"]).decode().strip()
 
 ---
 
-## 9. Moltbook Verification Ritual
+## 10. Moltbook Verification Ritual
 
 ### Step 1 - Post your MoltID
 Post on Moltbook:
@@ -277,7 +301,7 @@ If true, verifier replies: **MoltID Verified (node-running, Maxima reachable)**
 
 ---
 
-## 10. RPC Endpoint
+## 11. RPC Endpoint
 
 All commands available via HTTP:
 
@@ -294,7 +318,7 @@ curl "http://localhost:9005/maxima%20action:info"
 
 ---
 
-## 11. MDS (MiniDapp System) - Agent Access
+## 12. MDS (MiniDapp System) - Advanced
 
 MDS runs on port 9003 with SSL encryption. Use these scripts to manage and interact with MiniDapps like Soko.
 
@@ -343,7 +367,7 @@ Username: `minima`, Password: your `MDS_PASSWORD`
 
 ---
 
-## 12. Python Agent Example
+## 13. Python Agent Example
 
 ```python
 import requests
