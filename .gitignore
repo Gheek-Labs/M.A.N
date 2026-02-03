@@ -1,4 +1,6 @@
 minima/data/
+minima/minima.jar
+attached_assets/
 *.class
 *.log
 *.jar.original

@@ -3,11 +3,31 @@
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 DATA_DIR="$SCRIPT_DIR/data"
 JAR_PATH="$SCRIPT_DIR/minima.jar"
+JAR_URL="https://github.com/minima-global/Minima/raw/master/jar/minima.jar"
 RPC_PORT=9005
 P2P_PORT=9001
 MDS_PORT=9003
 
 mkdir -p "$DATA_DIR"
+
+if [ ! -f "$JAR_PATH" ]; then
+    echo "minima.jar not found. Downloading from GitHub..."
+    if command -v curl &> /dev/null; then
+        curl -L -o "$JAR_PATH" "$JAR_URL"
+    elif command -v wget &> /dev/null; then
+        wget -O "$JAR_PATH" "$JAR_URL"
+    else
+        echo "Error: Neither curl nor wget found. Please install one."
+        exit 1
+    fi
+    
+    if [ ! -f "$JAR_PATH" ]; then
+        echo "Error: Failed to download minima.jar"
+        exit 1
+    fi
+    echo "Download complete!"
+    echo ""
+fi
 
 # ============================================
 # MDS Password Security
