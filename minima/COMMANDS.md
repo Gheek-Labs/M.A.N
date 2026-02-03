@@ -137,7 +137,7 @@ Complete command list for agent programmatic access via `http://localhost:9005/<
 |---------|-------------|
 | `help` | Full help. Use `help command:<cmd>` for detailed info on a specific command (e.g., `help command:status`) |
 | `rpc` | RPC settings |
-| `webhooks` | Manage webhooks |
+| `webhooks` | `action:list\|add\|remove\|clear` `hook:<url>` - Add a webhook that is called with Minima events as they happen |
 | `quit` | Shutdown node |
 
 ## Quick Access Scripts
