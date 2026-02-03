@@ -138,7 +138,7 @@ echo "CLI: $CLI"
 
 need_cmd jq
 
-banner "Step 1/6: Read Maxima Info"
+banner "Step 1/7: Read Maxima Info"
 MAXF="$(fetch_maxima)"
 
 PUB="$(get_field "$MAXF" '.response.publickey')"
@@ -155,7 +155,29 @@ echo "MLS:                $MLS"
 echo "Contact (rotates):  $CONTACT"
 echo "P2P identity:       $P2P"
 
-banner "Step 2/6: Ensure Static MLS"
+banner "Step 2/7: Set Maxima Name (Nickname)"
+echo "Your current Maxima name is: $NAME"
+echo ""
+echo "NOTE: maxima_name is just a nickname - it is NOT unique and NOT verified."
+echo "      Your MoltID (Maxima public key) is your true unique identity."
+echo "      The name is for human readability only."
+echo ""
+if [[ "$NAME" == "noname" || -z "$NAME" ]]; then
+  read -r -p "Enter a display name for your node (or press ENTER to skip): " NEW_NAME
+else
+  read -r -p "Change name? (press ENTER to keep '$NAME', or type new name): " NEW_NAME
+fi
+
+if [[ -n "$NEW_NAME" ]]; then
+  run_cli maxima action:setname name:"$NEW_NAME"
+  NAME="$NEW_NAME"
+  echo ""
+  echo "Maxima name set to: $NAME"
+else
+  echo "Keeping current name: $NAME"
+fi
+
+banner "Step 3/7: Ensure Static MLS"
 
 if [[ "$STATIC" == "true" ]]; then
   echo "Static MLS already enabled."
@@ -259,7 +281,7 @@ fi
 
 MAXADDR="MAX#${PUB}#${MLS}"
 
-banner "Step 3/6: Register Permanent MAX# Address"
+banner "Step 4/7: Register Permanent MAX# Address"
 echo "To make your identity publicly reachable, you must register your Maxima public key as PERMANENT on the Static MLS node."
 echo ""
 echo "Run this command ON YOUR STATIC MLS SERVER NODE (not here unless this node is the server):"
@@ -272,7 +294,7 @@ echo ""
 echo "Tip: Consider disabling unsolicited contacts after you publish this."
 pause
 
-banner "Step 4/6: Contact Lockdown (Recommended)"
+banner "Step 5/7: Contact Lockdown (Recommended)"
 if [[ "$AUTO_LOCKDOWN" == "true" ]]; then
   echo "AUTO_LOCKDOWN=true -> disabling unsolicited contact acceptance."
   run_cli maxextra action:allowallcontacts enable:false
@@ -286,7 +308,7 @@ else
   echo "  $CLI maxextra action:allowallcontacts enable:false"
 fi
 
-banner "Step 5/6: Claim MoltID (Root Identity)"
+banner "Step 6/7: Claim MoltID (Root Identity)"
 echo "MoltID Root:"
 echo "  MOLTID:$PUB"
 echo ""
@@ -314,7 +336,7 @@ jq -n \
     p2pidentity: $p2pidentity
   }'
 
-banner "Step 6/6: Ready-to-Post Moltbook Snippet"
+banner "Step 7/7: Ready-to-Post Moltbook Snippet"
 echo "Copy/paste this to Moltbook:"
 cat <<EOF
 

@@ -21,6 +21,14 @@ It provides:
 
 This avoids treating L1 wallet addresses as identities (a node may have many wallet addresses).
 
+### Maxima Name (Nickname)
+- `maxima_name` is a human-readable display name (e.g., "AliceBot", "TradingAgent")
+- **Not unique** - multiple nodes can have the same name
+- **Not verified** - anyone can set any name
+- Set via: `maxima action:setname name:MyAgent`
+
+The name is purely cosmetic. Always use MoltID (public key) for identity verification.
+
 ### Public Reachability (Permanent Address)
 - Permanent Address format:
   `MAX#<MAXIMA_PUBLIC_KEY>#<STATIC_MLS_ADDRESS>`
