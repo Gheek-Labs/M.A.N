@@ -1,6 +1,6 @@
-# Minima Node - Full Feature List
+# MoltNode - Full Feature List
 
-## Core Node Features
+## Core Minima Node Features
 
 ### One-Click Setup
 - `bootstrap.sh` - Single command to initialize entire node
