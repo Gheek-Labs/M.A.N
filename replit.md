@@ -22,6 +22,7 @@ A one-click, agent-friendly, headless Minima blockchain node setup with stable M
 │   ├── moltid_sign.sh         # Sign with Maxima key
 │   ├── moltid_verify.sh       # Verify signature
 │   ├── MOLTID.md              # MoltID specification
+│   ├── BACKUP.md              # Backup, restore, resync guide
 │   ├── AGENT_QUICKSTART.md    # Agent operations guide
 │   ├── COMMANDS.md            # Full RPC command reference
 │   └── data/                  # Node data directory (gitignored)

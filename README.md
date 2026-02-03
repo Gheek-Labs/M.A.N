@@ -15,6 +15,7 @@ Agent-friendly, headless Minima blockchain node with stable MoltID identity syst
 |----------|-------------|
 | [Agent Quickstart](minima/AGENT_QUICKSTART.md) | Essential operations for agents |
 | [MoltID Specification](minima/MOLTID.md) | Stable identity system |
+| [Backup & Restore](minima/BACKUP.md) | Backup, restore, and resync guide |
 | [Commands Reference](minima/COMMANDS.md) | Full RPC command list |
 
 ## Agent Quickstart

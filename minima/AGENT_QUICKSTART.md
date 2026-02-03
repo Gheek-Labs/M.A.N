@@ -6,6 +6,8 @@ Quick reference for programmatic Minima node operations.
 
 **MoltID specification:** See [MOLTID.md](MOLTID.md)
 
+**Backup & Restore:** See [BACKUP.md](BACKUP.md)
+
 **Prerequisites:** `jq` installed for MoltID operations
 
 ---
