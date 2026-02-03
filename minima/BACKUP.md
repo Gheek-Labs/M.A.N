@@ -124,48 +124,71 @@ Decrypt an encrypted backup file to inspect or migrate.
 
 ## 5. Vault (Key Management)
 
-Manage your wallet seed phrase and private keys. **Use with extreme caution.**
+**BE CAREFUL.** Wipe / Restore your private keys.
 
-### View Seed Phrase
-```bash
-./minima/cli.sh vault action:seed
-```
+This command allows you to view/change your passphrase and seed. **DO NOT SHARE THESE WITH ANYONE.**
 
-### Wipe Keys (Dangerous)
-Removes all private keys from the node:
-```bash
-./minima/cli.sh vault action:wipekeys
-```
+**ENSURE YOU HAVE A BACKUP AND SECURE RECORD OF YOUR PASSPHRASE BEFORE LOCKING.**
 
-### Restore Keys from Seed
-```bash
-./minima/cli.sh vault action:restorekeys seed:"your 24 word seed phrase here"
-```
+You must have your passphrase to unlock your private keys.
 
-### Password Lock Keys
-Encrypt keys at rest with a password:
-```bash
-./minima/cli.sh vault action:passwordlock
-```
+### Parameters
 
-### Password Unlock Keys
-Decrypt keys for use:
-```bash
-./minima/cli.sh vault action:passwordunlock
-```
+| Parameter | Description |
+|-----------|-------------|
+| `action:` | (optional) `seed` (default), `wipekeys`, `restorekeys`, `passwordlock`, `passwordunlock` |
+| `seed:` | (optional) Enter your seed to lock your node. This will delete your private keys. |
+| `phrase:` | (optional) Enter your passphrase in double quotes to restore your node. This will reinstate your private keys. |
+| `password:` | Password for lock/unlock operations |
+| `confirm:` | Password confirmation for lock operation |
+
+### Actions
 
 | Action | Description |
 |--------|-------------|
-| `seed` | Display seed phrase |
-| `wipekeys` | Delete all private keys |
-| `restorekeys` | Restore keys from seed phrase |
-| `passwordlock` | Encrypt keys with password |
-| `passwordunlock` | Decrypt keys |
+| `seed` | Show your seed phrase (default) |
+| `wipekeys` | Wipe your private keys - keep the public |
+| `restorekeys` | Restore your private keys |
+| `passwordlock` | Lock your node by password encrypting private keys |
+| `passwordunlock` | Unlock your node to reinstate your private keys |
 
-**Security notes:**
-- Never share your seed phrase
+### Examples
+
+**View seed phrase:**
+```bash
+./minima/cli.sh vault
+```
+
+**Wipe keys (with seed):**
+```bash
+./minima/cli.sh vault action:wipekeys seed:0xDD4E..
+```
+
+**Restore keys (with phrase):**
+```bash
+./minima/cli.sh vault action:restorekeys phrase:\"SPRAY LAMP..\"
+```
+
+**Password lock:**
+```bash
+./minima/cli.sh vault action:passwordlock password:your_password
+```
+
+**Password lock with confirmation:**
+```bash
+./minima/cli.sh vault action:passwordlock password:your_password confirm:your_password
+```
+
+**Password unlock:**
+```bash
+./minima/cli.sh vault action:passwordunlock password:your_password
+```
+
+### Security Notes
+- **Never share your seed phrase or passphrase**
 - Store seed phrase offline in a secure location
-- Password lock is for at-rest encryption only
+- Password lock encrypts keys at rest
+- Without your passphrase, locked keys cannot be recovered
 
 ---
 
