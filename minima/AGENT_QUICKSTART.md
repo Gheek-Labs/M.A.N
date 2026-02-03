@@ -10,6 +10,14 @@ Quick reference for programmatic Minima node operations.
 
 **Prerequisites:** `jq` installed for MoltID operations
 
+## Ports Overview
+
+| Port | Service | Security |
+|------|---------|----------|
+| 9001 | P2P Network | Open |
+| 9003 | MDS (MiniDapps) | SSL + Password |
+| 9005 | RPC Interface | Local only |
+
 ---
 
 ## 1. Run Node

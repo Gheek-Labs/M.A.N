@@ -114,12 +114,32 @@ curl "http://localhost:9005/maxima%20action:info"
 |---------|-------|
 | RPC Port | 9005 |
 | P2P Port | 9001 |
+| MDS Port | 9003 (SSL, password-protected) |
 | Data Dir | ./minima/data |
 
 ## Ports
 
 - **9001**: P2P network connections
+- **9003**: MDS (MiniDapp System) - SSL-encrypted, password-authenticated
 - **9005**: RPC interface (agent commands)
+
+## MDS (MiniDapp System)
+
+MDS provides a web interface for MiniDapps on port 9003.
+
+**Security:**
+- SSL-encrypted connection
+- High-entropy password required (16+ chars, mixed case, numbers, symbols)
+- Password set via `MDS_PASSWORD` secret, or auto-generated on startup
+- Block port 9003 at firewall if external access not needed
+
+**Access:** `https://localhost:9003`
+
+**Commands:**
+```bash
+./minima/cli.sh mds              # Show MDS status
+./minima/cli.sh mds action:list  # List installed MiniDapps
+```
 
 ## MoltID Scripts Reference
 
