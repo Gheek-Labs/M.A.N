@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minima Chat</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Minima Chat</h1>
+            <p class="subtitle">Talk to your Minima node in natural language</p>
+            <div class="provider-info" id="provider-info"></div>
+        </header>
+        
+        <div class="chat-container" id="chat-container">
+            <div class="messages" id="messages">
+                <div class="message assistant">
+                    <div class="message-content">
+                        Hello! I'm your Minima node assistant. You can ask me things like:
+                        <ul>
+                            <li>"What's my balance?"</li>
+                            <li>"Show me my node status"</li>
+                            <li>"What's my MxID?"</li>
+                            <li>"List my contacts"</li>
+                            <li>"Send 5 Minima to MxG..."</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="input-container">
+            <form id="chat-form">
+                <input type="text" id="message-input" placeholder="Ask about your Minima node..." autocomplete="off">
+                <button type="submit" id="send-btn">Send</button>
+            </form>
+            <div class="controls">
+                <button type="button" id="reset-btn" class="secondary">New Chat</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const messagesContainer = document.getElementById('messages');
+        const chatForm = document.getElementById('chat-form');
+        const messageInput = document.getElementById('message-input');
+        const sendBtn = document.getElementById('send-btn');
+        const resetBtn = document.getElementById('reset-btn');
+        const providerInfo = document.getElementById('provider-info');
+        
+        async function fetchProviderInfo() {
+            try {
+                const response = await fetch('/api/provider');
+                const data = await response.json();
+                if (data.provider) {
+                    providerInfo.textContent = `LLM: ${data.provider} (${data.model})`;
+                }
+            } catch (e) {
+                console.error('Failed to fetch provider info:', e);
+            }
+        }
+        
+        function addMessage(content, role) {
+            const div = document.createElement('div');
+            div.className = `message ${role}`;
+            div.innerHTML = `<div class="message-content">${formatMessage(content)}</div>`;
+            messagesContainer.appendChild(div);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+        
+        function formatMessage(text) {
+            text = text.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            text = text.replace(/`([^`]+)`/g, '<code>$1</code>');
+            text = text.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+            text = text.replace(/\n/g, '<br>');
+            return text;
+        }
+        
+        function setLoading(loading) {
+            sendBtn.disabled = loading;
+            messageInput.disabled = loading;
+            sendBtn.textContent = loading ? '...' : 'Send';
+        }
+        
+        chatForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const message = messageInput.value.trim();
+            if (!message) return;
+            
+            addMessage(message, 'user');
+            messageInput.value = '';
+            setLoading(true);
+            
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message })
+                });
+                
+                const data = await response.json();
+                
+                if (data.error) {
+                    addMessage(`Error: ${data.error}`, 'error');
+                } else {
+                    addMessage(data.response, 'assistant');
+                }
+            } catch (e) {
+                addMessage(`Error: ${e.message}`, 'error');
+            } finally {
+                setLoading(false);
+                messageInput.focus();
+            }
+        });
+        
+        resetBtn.addEventListener('click', async () => {
+            try {
+                await fetch('/api/reset', { method: 'POST' });
+                messagesContainer.innerHTML = `
+                    <div class="message assistant">
+                        <div class="message-content">
+                            Chat reset! How can I help you with your Minima node?
+                        </div>
+                    </div>
+                `;
+            } catch (e) {
+                console.error('Failed to reset:', e);
+            }
+        });
+        
+        fetchProviderInfo();
+        messageInput.focus();
+    </script>
+</body>
+</html>

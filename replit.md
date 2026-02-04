@@ -1,12 +1,23 @@
 # Minima Node - One-Click Bootstrap
 
 ## Overview
-A one-click, agent-friendly, headless Minima blockchain node setup with stable MxID identity system. The node runs with RPC enabled for programmatic interaction.
+A one-click, agent-friendly, headless Minima blockchain node setup with stable MxID identity system and natural language chat interface. The node runs with RPC enabled for programmatic interaction.
 
 ## Project Structure
 ```
 /
 ├── bootstrap.sh       # One-click setup script
+├── chat/              # Natural language chat interface
+│   ├── app.py         # Flask web server (port 5000)
+│   ├── minima_agent.py # LLM agent + command execution
+│   ├── providers/     # LLM provider abstraction
+│   │   ├── base.py    # Abstract base class
+│   │   ├── openai_provider.py    # OpenAI/Replit AI
+│   │   ├── anthropic_provider.py # Claude
+│   │   ├── ollama_provider.py    # Local models
+│   │   └── custom_provider.py    # OpenAI-compatible
+│   ├── templates/     # HTML templates
+│   └── static/        # CSS styles
 ├── minima/
 │   ├── minima.jar     # Minima node JAR (downloaded on first run)
 │   ├── start.sh       # Node startup script

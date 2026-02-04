@@ -5,3 +5,13 @@ attached_assets/
 *.log
 *.jar.original
 .DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pythonlibs/
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
