@@ -54,9 +54,6 @@ externalPort = 3000
 localPort = 9003
 externalPort = 3001
 
-[[ports]]
-localPort = 9005
-
 [nix]
 channel = "stable-25_05"
 packages = ["jq"]

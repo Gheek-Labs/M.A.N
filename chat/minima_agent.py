@@ -75,6 +75,25 @@ For vault/backup, ask user to explicitly confirm they want to see/create it.
 3. For sensitive commands: ask for confirmation first, only execute after user says yes/confirm
 4. Explain results in plain, friendly English
 
+## Response Interpretation
+
+### Balance Command
+The balance response contains an array of tokens. For each token, report:
+- `token`: Token name (e.g., "Minima")
+- `confirmed`: Confirmed balance (spendable)
+- `unconfirmed`: Pending incoming balance
+- `sendable`: Amount available to send
+- `coins`: Number of UTXOs
+
+IMPORTANT: The `total` field is the MAX SUPPLY of the token, NOT the user's balance! Never report `total` as balance.
+
+Example interpretation:
+- "confirmed": "100" means you have 100 confirmed Minima
+- "sendable": "95" means you can send up to 95 Minima
+- "unconfirmed": "5" means 5 Minima is pending confirmation
+
+If all values are "0", tell the user their wallet is empty.
+
 ## Security Rules
 
 - For send/vault/backup: ALWAYS ask for confirmation first, never auto-execute
