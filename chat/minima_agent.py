@@ -277,13 +277,15 @@ class MinimaAgent:
                 system_prompt=SYSTEM_PROMPT
             )
         elif blocked_commands:
-            base = extract_command_base(blocked_commands[0])
-            if base == "send":
-                final_response = f"I understand you want to execute: `{blocked_commands[0]}`\n\nThis is a transaction that will send funds. Please type **confirm** to proceed, or **cancel** to abort."
-            elif base == "vault":
-                final_response = "This will reveal your seed phrase which is highly sensitive. Please type **confirm** if you're sure, or **cancel** to abort."
+            # Check if LLM's response already contains a confirmation request
+            has_confirmation = any(word in response.lower() for word in ["confirm", "cancel", "proceed", "abort"])
+            if has_confirmation:
+                # LLM already asked for confirmation - use its response
+                final_response = response
             else:
-                final_response = f"This command (`{blocked_commands[0]}`) requires confirmation. Type **confirm** to proceed or **cancel** to abort."
+                # LLM forgot to ask - add a concise fallback
+                cmd = blocked_commands[0]
+                final_response = f"{response}\n\n**Confirm:** `{cmd}` - Type **confirm** or **cancel**."
         else:
             final_response = response
         
