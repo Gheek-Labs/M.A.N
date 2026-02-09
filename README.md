@@ -1,4 +1,4 @@
-# Minima Agentic Node - One-Click Bootstrap
+# M.A.N. - Minima Agentic Node - One-Click Bootstrap
 
 Agent-friendly, headless Minima blockchain node with stable MxID identity system.
 
