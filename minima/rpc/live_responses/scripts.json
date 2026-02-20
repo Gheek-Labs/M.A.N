@@ -614,6 +614,15 @@
             "default": false,
             "publickey": "0x00",
             "track": true
+        },
+        {
+            "script": "RETURN SIGNEDBY(0x0FAF03C7D41EDBB9FC7884C109E6EE99727E8C00AA8BAB3368023B1E18C60308)",
+            "address": "0xB3BF533E148C458DAFDDB9185795C7F3FD64A37E375071118E6B420B0F4CE35A",
+            "miniaddress": "MxG085JNT9JS54C8M6QVNDP31BPBHVJVYWA6VHNA1ZH33JB885GUJ73BABTT9Y1",
+            "simple": true,
+            "default": false,
+            "publickey": "0x0FAF03C7D41EDBB9FC7884C109E6EE99727E8C00AA8BAB3368023B1E18C60308",
+            "track": true
         }
     ]
 }

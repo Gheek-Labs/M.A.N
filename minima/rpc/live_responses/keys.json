@@ -515,9 +515,17 @@
                 "maxuses": 262144,
                 "modifier": "0x3F",
                 "publickey": "0xDDCC42DE509A1E8E32096FAFB70B51A2125057AE605C4E112E27060ADF9C2EE7"
+            },
+            {
+                "size": 64,
+                "depth": 3,
+                "uses": 0,
+                "maxuses": 262144,
+                "modifier": "0x40",
+                "publickey": "0x0FAF03C7D41EDBB9FC7884C109E6EE99727E8C00AA8BAB3368023B1E18C60308"
             }
         ],
-        "total": 64,
+        "total": 65,
         "maxuses": 5
     }
 }

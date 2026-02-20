@@ -4,21 +4,21 @@
     "pending": false,
     "response": {
         "1block": {
-            "txns": 0,
-            "max": 0,
-            "med": 0,
-            "avg": 0,
-            "min": 0
-        },
-        "10block": {
             "txns": 2,
             "max": 0,
             "med": 0,
             "avg": 0,
             "min": 0
         },
+        "10block": {
+            "txns": 7,
+            "max": 0,
+            "med": 0,
+            "avg": 0,
+            "min": 0
+        },
         "50block": {
-            "txns": 10,
+            "txns": 14,
             "max": 0,
             "med": 0,
             "avg": 0,
