@@ -1,0 +1,10 @@
+{
+    "command": "balance tokendetails:true decimals:0",
+    "params": {
+        "tokendetails": "true",
+        "decimals": "0"
+    },
+    "status": false,
+    "pending": false,
+    "error": "Invalid parameter : decimals"
+}

@@ -23,8 +23,8 @@
         <span class="value" id="block">—</span>
       </div>
       <div class="status-item">
-        <span class="label">Devices</span>
-        <span class="value" id="devices">—</span>
+        <span class="label">Connections</span>
+        <span class="value" id="connections">—</span>
       </div>
       <div class="status-item">
         <span class="label">Mempool</span>
@@ -104,7 +104,7 @@
         const s = data.status;
         document.getElementById('version').textContent = s.version;
         document.getElementById('block').textContent = s.block.toLocaleString();
-        document.getElementById('devices').textContent = s.devices;
+        document.getElementById('connections').textContent = s.connections;
         document.getElementById('mempool').textContent = s.mempool;
       } catch (e) {
         console.error('Status fetch failed:', e);

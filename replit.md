@@ -156,7 +156,11 @@ Replit AI Integration is used by default (no API key needed).
 
 ### Response format
 - All RPC responses are JSON: `{"status": true/false, "response": ...}`
-- Many numeric fields are **strings** (e.g., `"length": "1931455"`) — parse with `int()`/`float()`
+- **Mixed types:** Some numeric fields are integers (e.g., `length`, `chain.block`, `txpow.*`), others are strings (e.g., `weight`, `minima`, `coins`, `confirmed`). Use `_safe_int()`/`safeInt()` which handles both.
+- The `devices` field does **NOT** exist in the status response
+- `chain.time` is a date string, NOT millis. `chain.speed` is a float.
+- `tokens` response uses `name` field; `balance` response uses `token` field (different names!)
+- `balance tokendetails:true` returns rich metadata including `details.decimals` (integer; 0 = NFT)
 - HTTP responses use LF-only line endings — use a JSON parser, never regex
 - Hex values are prefixed with `0x`
 
@@ -165,6 +169,7 @@ See `minima/RESPONSE_SCHEMAS.md` for complete field semantics, types, and agent 
 Machine-readable schemas in `minima/rpc/schemas/*.schema.json`.
 
 ## Recent Changes
+- 2026-02-20: Phase 5: Live-validated schemas, SDKs, and templates against running node. Fixed: status (removed devices, corrected int/float types), hash (added data/type fields), random (added size/hashed/type/keycode), tokens (decimals/scale are int, name vs token field), maxima (added icon/mxpublickey/staticmls/poll). Added balance tokendetails:true + NFT detection (decimals:0). Added nfts() to both SDKs.
 - 2026-02-20: Phase 4: On-chain record recipe (ONCHAIN_RECORDS.md, record_data.sh, SDK recordOnChain helpers, hash schema warnings)
 - 2026-02-20: Added templates: node-web-dashboard, python-bot, ros2-bridge
 - 2026-02-20: Added language integration kits (integration/python + integration/node)

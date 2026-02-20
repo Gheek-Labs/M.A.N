@@ -10,23 +10,27 @@
       "properties": {
         "version": {
           "type": "string",
-          "description": "Minima version string"
+          "description": "Minima version string (e.g., '1.0.46.8')"
         },
-        "devices": {
+        "uptime": {
           "type": "string",
-          "description": "Number of connected devices (string, parse with int())"
+          "description": "Human-readable uptime (e.g., '0 Years 0 Months 0 Weeks 0 Days 1 Hours 5 Minutes')"
+        },
+        "locked": {
+          "type": "boolean",
+          "description": "Whether wallet keys are password-locked"
         },
         "length": {
-          "type": "string",
-          "description": "AGENT WARNING: Chain height as STRING, not integer. Parse with int()."
+          "type": "integer",
+          "description": "Chain height (integer)"
         },
         "weight": {
           "type": "string",
-          "description": "Chain weight (string)"
+          "description": "Chain weight (large number as string)"
         },
         "minima": {
           "type": "string",
-          "description": "Total Minima in circulation (string)"
+          "description": "Total Minima in circulation (decimal string)"
         },
         "coins": {
           "type": "string",
@@ -39,43 +43,53 @@
         "memory": {
           "type": "object",
           "properties": {
-            "ram": { "type": "string", "description": "RAM usage" },
-            "disk": { "type": "string", "description": "Disk usage" },
+            "ram": { "type": "string", "description": "RAM usage (e.g., '405.8 MB')" },
+            "disk": { "type": "string", "description": "Disk usage (e.g., '1.0 GB')" },
             "files": {
-              "type": "object",
-              "properties": {
-                "txpowdb": { "type": "string" },
-                "archivedb": { "type": "string" },
-                "cascade": { "type": "string" },
-                "chaintree": { "type": "string" },
-                "wallet": { "type": "string" },
-                "userdb": { "type": "string" },
-                "p2pdb": { "type": "string" }
-              }
+              "type": ["object", "integer"],
+              "description": "File size breakdown or total file count"
             }
           }
         },
         "chain": {
           "type": "object",
           "properties": {
-            "block": { "type": "string", "description": "Current block number (string)" },
-            "time": { "type": "string", "description": "Block timestamp" },
+            "block": { "type": "integer", "description": "Current block number (integer)" },
+            "time": { "type": "string", "description": "Block timestamp as human-readable date string" },
             "hash": { "type": "string", "description": "Block hash (0x-prefixed)" },
-            "speed": { "type": "string", "description": "Block speed" },
-            "difficulty": { "type": "string", "description": "Mining difficulty" },
-            "size": { "type": "string", "description": "Block size" },
-            "length": { "type": "string", "description": "Chain length (string)" },
-            "weight": { "type": "string", "description": "Chain weight" },
-            "cascade": { "type": "object" }
+            "speed": { "type": "number", "description": "Block speed (float)" },
+            "difficulty": { "type": "string", "description": "Mining difficulty (0x-prefixed hex)" },
+            "size": { "type": "integer", "description": "Chain tree size (integer)" },
+            "length": { "type": "integer", "description": "Chain tree length (integer)" },
+            "branches": { "type": "integer", "description": "Number of active branches (integer)" },
+            "weight": { "type": "string", "description": "Chain weight (large number as string)" },
+            "cascade": { "type": "object", "description": "Cascade chain info" }
           }
         },
         "txpow": {
           "type": "object",
           "properties": {
-            "mempool": { "type": "string", "description": "Mempool transaction count (string)" },
-            "ramdb": { "type": "string" },
-            "txpowdb": { "type": "string" },
-            "archivedb": { "type": "string" }
+            "mempool": { "type": "integer", "description": "Mempool transaction count (integer)" },
+            "ramdb": { "type": "integer", "description": "RAM DB entries (integer)" },
+            "txpowdb": { "type": "integer", "description": "TxPoW DB entries (integer)" },
+            "archivedb": { "type": "integer", "description": "Archive DB entries (integer)" }
+          }
+        },
+        "network": {
+          "type": "object",
+          "properties": {
+            "host": { "type": "string", "description": "Node IP address" },
+            "hostset": { "type": "boolean", "description": "Whether host was manually set" },
+            "port": { "type": "integer", "description": "P2P port (integer)" },
+            "connecting": { "type": "integer", "description": "Connections in progress (integer)" },
+            "connected": { "type": "integer", "description": "Active peer connections (integer)" },
+            "rpc": {
+              "type": "object",
+              "properties": {
+                "enabled": { "type": "boolean" },
+                "port": { "type": "integer" }
+              }
+            }
           }
         }
       }
@@ -83,8 +97,11 @@
   },
   "required": ["status", "response"],
   "x-agent-warnings": [
-    "Most numeric fields are STRINGS — always parse with int() or float()",
-    "length, block, coins, devices are all strings, not integers",
+    "MIXED TYPES: length, chain.block, chain.size, chain.length, txpow.*, network.port, network.connected are INTEGERS",
+    "weight, minima, coins remain STRINGS (large numbers)",
+    "chain.speed is a FLOAT",
+    "chain.time is a date string like 'Fri Feb 20 10:59:14 GMT 2026', NOT millis",
+    "The 'devices' field does NOT exist in the status response",
     "Hex values are 0x-prefixed"
   ]
 }

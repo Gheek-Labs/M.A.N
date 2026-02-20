@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "balance",
-  "description": "Returns token balances for this node's wallet.",
+  "description": "Returns token balances for this node's wallet. Use 'balance tokendetails:true' for richer token metadata.",
   "type": "object",
   "properties": {
     "status": { "type": "boolean" },
@@ -11,8 +11,8 @@
         "type": "object",
         "properties": {
           "token": {
-            "type": "string",
-            "description": "Token display name (e.g., 'Minima' for native token)"
+            "type": ["string", "object"],
+            "description": "Token display name (string for plain balance, object with name/url/description/ticker when tokendetails:true)"
           },
           "tokenid": {
             "type": "string",
@@ -37,6 +37,17 @@
           "total": {
             "type": "string",
             "description": "AGENT WARNING: This is the TOKEN MAX SUPPLY / HARDCAP, NOT wallet balance. ~1B for Minima. NEVER display as balance."
+          },
+          "details": {
+            "type": "object",
+            "description": "Only present when tokendetails:true and token is custom (not native Minima)",
+            "properties": {
+              "decimals": { "type": "integer", "description": "Decimal places (INTEGER). 0 = NFT (non-fungible)" },
+              "script": { "type": "string", "description": "Token script" },
+              "totalamount": { "type": "string", "description": "Total amount in smallest unit" },
+              "scale": { "type": "string", "description": "Scale factor" },
+              "created": { "type": "string", "description": "Block number when token was created" }
+            }
           }
         },
         "required": ["token", "tokenid", "confirmed", "unconfirmed", "sendable", "coins", "total"]
@@ -47,6 +58,14 @@
   "x-agent-warnings": [
     "total is token max supply, NOT wallet balance",
     "Display sendable as primary balance",
-    "All numeric values are strings — parse with float() or Decimal"
-  ]
+    "All balance values (confirmed, sendable, etc.) are strings — parse with float() or Decimal",
+    "Use tokendetails:true to get rich metadata including decimals for NFT detection",
+    "NFT detection: filter for details.decimals == 0 (client-side, not a server parameter)",
+    "When tokendetails:true, custom token's 'token' field becomes an object with name/url/description/ticker"
+  ],
+  "x-parameters": {
+    "tokendetails": "true/false — include rich token metadata (default: false)",
+    "address": "Filter by address",
+    "confirmations": "Minimum confirmations"
+  }
 }

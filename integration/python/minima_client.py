@@ -77,7 +77,7 @@ class MinimaClient:
             f"Failed to connect to {self.base_url} after {self.retries} attempts: {last_error}"
         )
 
-    def balance(self, tokenid=None):
+    def balance(self, tokenid=None, token_details=False):
         """
         Get wallet balances with safe field naming.
 
@@ -86,18 +86,21 @@ class MinimaClient:
 
         Args:
             tokenid: Optional token ID filter (e.g., "0x00" for Minima)
+            token_details: If True, includes rich token metadata and details
 
         Returns:
             list[dict]: Normalized balances, each with:
-                - token (str): Token display name
+                - token (str|dict): Token display name, or dict with name/url/description/ticker
                 - tokenid (str): Token identifier
                 - sendable (str): Available to spend — PRIMARY BALANCE
                 - confirmed (str): Full wallet balance (includes locked)
                 - unconfirmed (str): Pending incoming
                 - coins (str): Number of UTXOs
                 - supply (dict): {"total": str} — token max supply, NOT balance
+                - details (dict|None): When token_details=True, includes decimals, scale, script, etc.
         """
-        result = self.command("balance")
+        cmd = "balance tokendetails:true" if token_details else "balance"
+        result = self.command(cmd)
         entries = result.get("response", [])
 
         normalized = []
@@ -113,12 +116,30 @@ class MinimaClient:
                     "total": entry.get("total", "0"),
                 },
             }
+            if token_details and "details" in entry:
+                item["details"] = entry["details"]
             normalized.append(item)
 
         if tokenid:
             normalized = [b for b in normalized if b["tokenid"] == tokenid]
 
         return normalized
+
+    def nfts(self):
+        """
+        List Non-Fungible Tokens (NFTs) in the wallet.
+
+        NFTs are tokens with decimals:0 (indivisible, quantity = whole units).
+        Uses balance tokendetails:true and filters client-side.
+
+        Returns:
+            list[dict]: Same as balance() but only NFT entries (decimals == 0)
+        """
+        balances = self.balance(token_details=True)
+        return [
+            b for b in balances
+            if b.get("details", {}).get("decimals") == 0
+        ]
 
     def balance_summary(self, tokenid="0x00"):
         """
@@ -146,25 +167,30 @@ class MinimaClient:
         Returns:
             dict: Normalized status with parsed integers where appropriate:
                 - version (str)
-                - chain_height (int): Parsed from response.length
-                - block (int): Current block number
-                - devices (int)
-                - mempool (int): Pending transactions
-                - uptime (str): Human-readable date
+                - chain_height (int): From response.length (already int from node)
+                - block (int): Current block number (already int from node)
+                - locked (bool): Whether wallet keys are password-locked
+                - mempool (int): Pending transactions (already int from node)
+                - connections (int): Active peer connections (already int from node)
+                - uptime (str): Human-readable uptime string
+                - block_time (str): Human-readable date of latest block
                 - raw (dict): Full unmodified response
         """
         result = self.command("status")
         resp = result.get("response", {})
         chain = resp.get("chain", {})
         txpow = resp.get("txpow", {})
+        network = resp.get("network", {})
 
         return {
             "version": resp.get("version", ""),
-            "chain_height": _safe_int(resp.get("length", "0")),
-            "block": _safe_int(chain.get("block", "0")),
-            "devices": _safe_int(resp.get("devices", "0")),
-            "mempool": _safe_int(txpow.get("mempool", "0")),
-            "uptime": chain.get("date", ""),
+            "chain_height": _safe_int(resp.get("length", 0)),
+            "block": _safe_int(chain.get("block", 0)),
+            "locked": resp.get("locked", False),
+            "mempool": _safe_int(txpow.get("mempool", 0)),
+            "connections": _safe_int(network.get("connected", 0)),
+            "uptime": resp.get("uptime", ""),
+            "block_time": chain.get("time", ""),
             "raw": resp,
         }
 
@@ -204,7 +230,7 @@ class MinimaClient:
 
     def hash(self, data):
         """
-        Hash data using Minima's Keccak-256.
+        Hash data using Minima's Keccak-256 / SHA3.
 
         WARNING: This is a LOCAL operation. It does NOT write to the blockchain
         and does NOT return a txpowid. To create an on-chain record, use
@@ -214,12 +240,18 @@ class MinimaClient:
             data: String or 0x-prefixed hex data
 
         Returns:
-            dict: {input, hash}
+            dict: {input, data, type, hash}
+                - input: original input as provided
+                - data: input converted to hex (0x-prefixed)
+                - type: hash algorithm used (e.g., "sha3")
+                - hash: hash result (0x-prefixed)
         """
         result = self.command(f"hash data:{data}")
         resp = result.get("response", {})
         return {
             "input": resp.get("input", ""),
+            "data": resp.get("data", ""),
+            "type": resp.get("type", ""),
             "hash": resp.get("hash", ""),
         }
 
@@ -283,10 +315,22 @@ class MinimaClient:
         Generate 256-bit cryptographic random value.
 
         Returns:
-            str: 0x-prefixed random hex string
+            dict: {random, hashed, keycode, size, type}
+                - random: 0x-prefixed random hex
+                - hashed: sha3 hash of the random value
+                - keycode: human-readable keycode form (e.g., "ZRJ7-79RD-...")
+                - size: byte size (string)
+                - type: hash algorithm used
         """
         result = self.command("random")
-        return result.get("response", {}).get("random", "")
+        resp = result.get("response", {})
+        return {
+            "random": resp.get("random", ""),
+            "hashed": resp.get("hashed", ""),
+            "keycode": resp.get("keycode", ""),
+            "size": resp.get("size", ""),
+            "type": resp.get("type", ""),
+        }
 
     def tokens(self):
         """
@@ -295,21 +339,22 @@ class MinimaClient:
         Returns:
             list[dict]: Each with {tokenid, name, supply_total, decimals, scale}
                         Note: supply_total is token max supply, NOT wallet balance.
+                        Note: decimals and scale are already integers from the node.
         """
         result = self.command("tokens")
         entries = result.get("response", [])
 
         normalized = []
         for entry in entries:
-            token = entry.get("token", "")
-            name = token if isinstance(token, str) else token.get("name", str(token))
+            name_field = entry.get("name", entry.get("token", ""))
+            name = name_field if isinstance(name_field, str) else name_field.get("name", str(name_field))
 
             normalized.append({
                 "tokenid": entry.get("tokenid", ""),
                 "name": name,
                 "supply_total": entry.get("total", "0"),
-                "decimals": _safe_int(entry.get("decimals", "0")),
-                "scale": _safe_int(entry.get("scale", "0")),
+                "decimals": _safe_int(entry.get("decimals", 0)),
+                "scale": _safe_int(entry.get("scale", 0)),
             })
 
         return normalized
@@ -334,17 +379,21 @@ class MinimaClient:
         Get Maxima identity and contact details.
 
         Returns:
-            dict: {name, publickey, mls, p2pidentity, localidentity, contact}
+            dict: {name, publickey, mxpublickey, staticmls, mls, p2pidentity, localidentity, contact, logs, poll}
         """
         result = self.command("maxima action:info")
         resp = result.get("response", {})
         return {
             "name": resp.get("name", ""),
             "publickey": resp.get("publickey", ""),
+            "mxpublickey": resp.get("mxpublickey", ""),
+            "staticmls": resp.get("staticmls", False),
             "mls": resp.get("mls", ""),
             "p2pidentity": resp.get("p2pidentity", ""),
             "localidentity": resp.get("localidentity", ""),
             "contact": resp.get("contact", ""),
+            "logs": resp.get("logs", False),
+            "poll": resp.get("poll", 0),
         }
 
     def contacts(self):

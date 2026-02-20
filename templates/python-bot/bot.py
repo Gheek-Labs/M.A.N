@@ -30,12 +30,14 @@ def print_header():
 
 def print_status(client):
     status = client.status()
-    print(f"  Version:  {status['version']}")
-    print(f"  Block:    {status['block']:,}")
-    print(f"  Height:   {status['chain_height']:,}")
-    print(f"  Devices:  {status['devices']}")
-    print(f"  Mempool:  {status['mempool']}")
-    print(f"  Time:     {status['uptime']}")
+    print(f"  Version:     {status['version']}")
+    print(f"  Block:       {status['block']:,}")
+    print(f"  Height:      {status['chain_height']:,}")
+    print(f"  Connections: {status['connections']}")
+    print(f"  Mempool:     {status['mempool']}")
+    print(f"  Locked:      {status['locked']}")
+    print(f"  Uptime:      {status['uptime']}")
+    print(f"  Block Time:  {status['block_time']}")
 
 
 def print_balance(client):

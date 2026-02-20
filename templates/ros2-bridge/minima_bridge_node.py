@@ -71,9 +71,11 @@ class MinimaBridgeNode:
             'version': status['version'],
             'block': status['block'],
             'chain_height': status['chain_height'],
-            'devices': status['devices'],
+            'connections': status['connections'],
             'mempool': status['mempool'],
-            'timestamp': status['uptime'],
+            'locked': status['locked'],
+            'uptime': status['uptime'],
+            'block_time': status['block_time'],
         }
 
     def get_address_data(self):
@@ -98,7 +100,7 @@ def run_standalone():
     while True:
         try:
             status = bridge.get_status_data()
-            print(f"[Status] v{status['version']} block={status['block']} devices={status['devices']}")
+            print(f"[Status] v{status['version']} block={status['block']} connections={status['connections']}")
 
             balances = bridge.get_balance_data()
             for b in balances:

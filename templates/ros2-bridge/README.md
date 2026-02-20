@@ -20,9 +20,11 @@ int32 coins            # Number of UTXOs
 string version
 int64 block
 int64 chain_height
-int32 devices
+int32 connections
 int32 mempool
-string timestamp
+bool locked
+string uptime
+string block_time
 ```
 
 ### MinimaAddress.msg

@@ -16,7 +16,9 @@ Every RPC response follows this envelope:
 
 ```json
 {
+  "command": "status",
   "status": true,        // true = success, false = error
+  "pending": false,      // true if command is async
   "response": { ... },   // Command-specific payload (object or array)
   "error": "..."         // Only present when status is false
 }
@@ -24,11 +26,19 @@ Every RPC response follows this envelope:
 
 > **AGENT WARNING:** Always check `status` before reading `response`. When `status` is `false`, `response` may be absent and `error` will contain the failure reason.
 
-### Global Type Gotchas
+### Type Conventions
 
-- **Numeric strings:** Many numeric fields (`length`, `block`, `amount`, `coins`, `confirmed`, etc.) are returned as **strings**, not numbers. Always parse: `int(x)`, `float(x)`, or `Decimal(x)`.
-- **Hex values:** All hashes, addresses, and keys are `0x`-prefixed hex strings.
-- **LF line endings:** HTTP responses use `\n` only (no `\r\n`). Use a JSON parser, never regex.
+Minima RPC uses **mixed types** — some numeric fields are integers, some are strings. This table shows the actual types returned by the live node:
+
+| Pattern | Examples | Actual Type |
+|---------|----------|-------------|
+| Block numbers, counts, sizes | `status.length`, `chain.block`, `chain.size`, `txpow.mempool`, `network.port` | **integer** |
+| Large numbers, amounts | `weight`, `minima`, `coins`, `confirmed`, `sendable`, `amount` | **string** |
+| Hash/address values | `hash`, `address`, `publickey`, `coinid` | **string** (0x-prefixed) |
+| Block speed | `chain.speed` | **float** |
+| Booleans | `locked`, `hostset`, `staticmls` | **boolean** |
+
+> **AGENT WARNING:** Do NOT assume all numeric fields are strings. Use `_safe_int()` / `safeInt()` wrappers which handle both int and string inputs.
 
 ---
 
@@ -40,10 +50,10 @@ Returns token balances for this node's wallet.
 { "status": true, "response": [{
   "token": "Minima",
   "tokenid": "0x00",
-  "confirmed": "1000",
+  "confirmed": "12",
   "unconfirmed": "0",
-  "sendable": "1000",
-  "coins": "3",
+  "sendable": "12",
+  "coins": "27",
   "total": "1000000000"
 }]}
 ```
@@ -65,6 +75,56 @@ Returns token balances for this node's wallet.
 > - Display `unconfirmed` as pending incoming.
 > - **NEVER** display `total` as a balance.
 
+### balance tokendetails:true
+
+When called with `tokendetails:true`, returns richer metadata for custom tokens:
+
+```json
+{ "status": true, "response": [{
+  "token": "Minima",
+  "tokenid": "0x00",
+  "confirmed": "12",
+  "unconfirmed": "0",
+  "sendable": "12",
+  "coins": "27",
+  "total": "1000000000"
+}, {
+  "token": {
+    "name": "porq",
+    "url": "<artimage>/9j/4AAQ...",
+    "description": "Welcome to the porq network...",
+    "ticker": "porq",
+    "webvalidate": ""
+  },
+  "tokenid": "0x050DFE5A...",
+  "confirmed": "10",
+  "unconfirmed": "0",
+  "sendable": "10",
+  "coins": "1",
+  "total": "1000000000000",
+  "details": {
+    "decimals": 8,
+    "script": "RETURN TRUE",
+    "totalamount": "0.000000000000000000000001",
+    "scale": "36",
+    "created": "794199"
+  }
+}]}
+```
+
+| Field | Type | Meaning |
+|-------|------|---------|
+| `token` | string or object | For native Minima: string `"Minima"`. For custom tokens: object with `name`, `url`, `description`, `ticker`, `webvalidate` |
+| `details.decimals` | **integer** | Decimal places. **0 = NFT** (non-fungible, indivisible) |
+| `details.script` | string | Token script |
+| `details.totalamount` | string | Total in smallest unit |
+| `details.scale` | string | Scale factor |
+| `details.created` | string | Block number when created |
+
+> **NFT Detection:** Filter for `details.decimals == 0` to find Non-Fungible Tokens.
+> The `decimals:0` filter is **not** a server-side parameter — filter client-side after fetching.
+> SDK provides `nfts()` method for convenience.
+
 ---
 
 ## status
@@ -73,42 +133,44 @@ Returns general node info: version, chain height, memory, connected peers.
 
 ```json
 { "status": true, "response": {
-  "version": "1.0.36",
-  "devices": "1",
-  "length": "1931455",
-  "weight": "...",
-  "minima": "1000000000",
-  "coins": "12345",
-  "data": "./minima/data",
+  "version": "1.0.46.8",
+  "uptime": "0 Years 0 Months 0 Weeks 0 Days 1 Hours 5 Minutes 30 Seconds",
+  "locked": false,
+  "length": 5328,
+  "weight": "815010928291270",
+  "minima": "999979665.55068805473389496137790014706585395910793557",
+  "coins": "1328161",
+  "data": "/home/runner/workspace/minima/data/1.0",
   "memory": {
-    "ram": "128MB",
-    "disk": "2.1GB",
-    "files": {
-      "txpowdb": "500MB",
-      "archivedb": "1.2GB",
-      "cascade": "50MB",
-      "chaintree": "100MB",
-      "wallet": "1MB",
-      "userdb": "500KB",
-      "p2pdb": "200KB"
-    }
+    "ram": "405.8 MB",
+    "disk": "1.0 GB",
+    "files": { ... }
   },
   "chain": {
-    "block": "1931455",
-    "time": "1706900000000",
-    "hash": "0xABC...",
-    "speed": "50",
-    "difficulty": "0x068DB...",
-    "size": "500",
-    "length": "1931455",
-    "weight": "...",
+    "block": 1958640,
+    "time": "Fri Feb 20 10:59:14 GMT 2026",
+    "hash": "0x00000020243A...",
+    "speed": 0.020941,
+    "difficulty": "0x00000050B884...",
+    "size": 2072,
+    "length": 2070,
+    "branches": 2,
+    "weight": "107983317170",
     "cascade": { ... }
   },
   "txpow": {
-    "mempool": "0",
-    "ramdb": "500",
-    "txpowdb": "10000",
-    "archivedb": "1500000"
+    "mempool": 1,
+    "ramdb": 19055,
+    "txpowdb": 19051,
+    "archivedb": 100001
+  },
+  "network": {
+    "host": "172.31.116.66",
+    "hostset": false,
+    "port": 9001,
+    "connecting": 0,
+    "connected": 5,
+    "rpc": { "enabled": true, "port": 9005 }
   }
 }}
 ```
@@ -116,14 +178,33 @@ Returns general node info: version, chain height, memory, connected peers.
 | Field | Type | Meaning |
 |-------|------|---------|
 | `version` | string | Minima version |
-| `devices` | string | Connected devices (parse with `int()`) |
-| `length` | string | Chain height (parse with `int()`) |
-| `minima` | string | Total Minima in circulation |
-| `chain.block` | string | Current block number |
-| `chain.time` | string | Block timestamp (millis since epoch) |
-| `txpow.mempool` | string | Pending transactions in mempool |
+| `uptime` | string | Human-readable uptime |
+| `locked` | boolean | Whether wallet keys are password-locked |
+| `length` | **integer** | Chain height |
+| `weight` | string | Chain weight (large number) |
+| `minima` | string | Total Minima in circulation (decimal string) |
+| `coins` | string | Total UTXOs |
+| `chain.block` | **integer** | Current block number |
+| `chain.time` | string | Block timestamp as human-readable date (NOT millis) |
+| `chain.speed` | **float** | Block speed |
+| `chain.size` | **integer** | Chain tree size |
+| `chain.length` | **integer** | Chain tree length |
+| `chain.branches` | **integer** | Active branches |
+| `txpow.mempool` | **integer** | Pending transactions |
+| `txpow.ramdb` | **integer** | RAM DB entries |
+| `txpow.txpowdb` | **integer** | TxPoW DB entries |
+| `txpow.archivedb` | **integer** | Archive DB entries |
+| `network.host` | string | Node IP address |
+| `network.hostset` | boolean | Whether host was manually set |
+| `network.port` | **integer** | P2P port |
+| `network.connected` | **integer** | Active peer connections |
 
-> **AGENT WARNING:** `length`, `devices`, `coins`, `chain.block`, and virtually all numbers are **strings**. Parse with `int()`.
+> **AGENT WARNING:**
+> - The `devices` field does **NOT** exist in the status response.
+> - `length`, `chain.block`, `chain.size`, `chain.length`, all `txpow.*`, `network.port`, `network.connected` are **integers** (not strings).
+> - `weight`, `minima`, `coins` remain **strings** (large numbers).
+> - `chain.speed` is a **float**.
+> - `chain.time` is a date string like `"Fri Feb 20 10:59:14 GMT 2026"`, NOT millis.
 
 ---
 
@@ -184,7 +265,7 @@ Send Minima or tokens to an address. Returns full TxPoW on success.
 
 ## hash
 
-Hash data using Minima's Keccak-256 hash function.
+Hash data using Minima's Keccak-256 / SHA3 hash function.
 
 > **AGENT WARNING — LOCAL OPERATION ONLY:**
 > `hash` computes a hash locally. It does **NOT** write anything to the blockchain and does **NOT** return a `txpowid`. The hash output **cannot** be looked up on the explorer.
@@ -198,14 +279,18 @@ Hash data using Minima's Keccak-256 hash function.
 ```json
 { "status": true, "response": {
   "input": "hello",
-  "hash": "0x1C8AFF950685C2ED4BC3174F3472287B56D9517B9C948127319A09A7A36DEAC8"
+  "data": "0x68656C6C6F",
+  "type": "sha3",
+  "hash": "0x3338BE694F50C5F338814986CDF0686453A888B84F424D792AF4B9202398F392"
 }}
 ```
 
 | Field | Type | Meaning |
 |-------|------|---------|
-| `input` | string | Original input |
-| `hash` | string | Keccak-256 result, `0x`-prefixed. **Local only — not a txpowid, not on-chain.** |
+| `input` | string | Original input as provided |
+| `data` | string | Input converted to hex (0x-prefixed) |
+| `type` | string | Hash algorithm used (e.g., "sha3") |
+| `hash` | string | Hash result, `0x`-prefixed. **Local only — not a txpowid, not on-chain.** |
 
 ---
 
@@ -215,13 +300,21 @@ Generate cryptographic random data using Minima's internal RNG.
 
 ```json
 { "status": true, "response": {
-  "random": "0x6B585B893F66A452D09F9DDF50326BD938F4DEB1B1A0F4DC421959D42A857624"
+  "size": "32",
+  "random": "0x63733C4E9DB63E81B41B199118602DD7A2F687886EE9D8BD930FAAC76D7F2D09",
+  "hashed": "0x11132C83AC8B435DBB857D502E374E0AA81A67541D1A835ACC9C6B092AC38CA0",
+  "type": "sha3",
+  "keycode": "ZRJ7-79RD-UG6Q-M6CH-1G2R"
 }}
 ```
 
 | Field | Type | Meaning |
 |-------|------|---------|
-| `random` | string | 256-bit random value, `0x`-prefixed |
+| `size` | string | Byte size of random data |
+| `random` | string | Raw random value, `0x`-prefixed |
+| `hashed` | string | SHA3 hash of the random value |
+| `type` | string | Hash algorithm used |
+| `keycode` | string | Human-readable keycode form (e.g., "ZRJ7-79RD-UG6Q-M6CH-1G2R") |
 
 ---
 
@@ -231,26 +324,29 @@ List all tokens known to this node.
 
 ```json
 { "status": true, "response": [{
+  "name": "Minima",
   "tokenid": "0x00",
-  "token": "Minima",
   "total": "1000000000",
-  "decimals": "44",
-  "script": "RETURN TRUE",
-  "coinid": "0x00",
-  "totalamount": "1000000000000000000000000000000000000000000000",
-  "scale": "1"
+  "decimals": 44,
+  "scale": 1
 }]}
 ```
 
 | Field | Type | Meaning |
 |-------|------|---------|
 | `tokenid` | string | Token ID. `0x00` = native Minima |
-| `token` | string or object | Name (string for Minima, object with `name`/`url`/`description` for custom tokens) |
+| `name` | string or object | Token name. **NOTE: This field is `name` in `tokens`, but `token` in `balance`** |
 | `total` | string | Token total supply (**NOT wallet balance**) |
-| `decimals` | string | Decimal places (parse with `int()`) |
-| `scale` | string | Scale factor (parse with `int()`) |
+| `decimals` | **integer** | Decimal places. **NOT a string** |
+| `scale` | **integer** | Scale factor. **NOT a string** |
 
-> **AGENT WARNING:** `total` here is the same concept as `balance.total` — it's the token supply, not how much you have. The `token` field can be a string **or** an object for custom tokens — always check the type.
+For custom tokens, additional fields appear: `script`, `coinid`, `totalamount`.
+
+> **AGENT WARNING:**
+> - `total` is the same concept as `balance.total` — it's the token supply, not how much you have.
+> - The token name field is **`name`** in this response, but **`token`** in the balance response.
+> - `decimals` and `scale` are **integers**, not strings (unlike most other numeric fields).
+> - For custom tokens, `name` can be an **object** with `name`/`url`/`description`/`ticker`.
 
 ---
 
@@ -260,21 +356,25 @@ Get the node's current default receiving address.
 
 ```json
 { "status": true, "response": {
-  "script": "RETURN SIGNEDBY(0x18A7AFE7...)",
-  "address": "0x2DF229042AA052477B3FC2388...",
-  "miniaddress": "MxG081DU8KG8AY0A93NMFU272...",
+  "script": "RETURN SIGNEDBY(0x364BDF...)",
+  "address": "0x6CE21C6073E84C8EACD64B9A70606343AA4AD19049F241E8C90CD570E5DF4B90",
+  "miniaddress": "MxG083CS8E60SV89W7APYWBJ9Z60ZQ3Y95D3429U90UHW8CQYZEBNQBW08JZF7U",
   "simple": true,
   "default": true,
-  "publickey": "0x18A7AFE76119922C493C41FF6F30F7B22E47594B0FB7DCE5C8BCE253E162CAC8",
+  "publickey": "0x364BDF449C0BB5D58636CE33DC55E59D7C920191A1F188AADA6BFD956743A8B3",
   "track": true
 }}
 ```
 
 | Field | Type | Meaning |
 |-------|------|---------|
+| `script` | string | Script associated with this address |
 | `address` | string | Hex address (`0x`-prefixed) |
 | `miniaddress` | string | Human-readable `MxG`-prefixed address |
+| `simple` | boolean | Whether this is a simple SIGNEDBY address |
+| `default` | boolean | Whether this is the default address |
 | `publickey` | string | Associated public key |
+| `track` | boolean | Whether this address is tracked for balance |
 
 ---
 
@@ -284,24 +384,33 @@ Get your Maxima identity and contact details.
 
 ```json
 { "status": true, "response": {
-  "name": "noname",
-  "publickey": "0x3081...",
-  "mls": "Mx...@1.2.3.4:9001",
-  "localidentity": "Mx...@192.168.1.1:9001",
-  "p2pidentity": "Mx...@1.2.3.4:9001",
-  "contact": "MxG18H...",
-  "logs": false
+  "name": "PETER",
+  "icon": "0x00",
+  "publickey": "0x30819F300D...",
+  "mxpublickey": "MxG18HGG6FJ038...",
+  "staticmls": true,
+  "mls": "MxG18HGG6FJ038...",
+  "localidentity": "MxG18HGG6FJ038...@192.168.1.1:9001",
+  "p2pidentity": "MxG18HGG6FJ038...@1.2.3.4:9001",
+  "contact": "MxG18HGG6FJ038...",
+  "logs": false,
+  "poll": 0
 }}
 ```
 
 | Field | Type | Meaning |
 |-------|------|---------|
 | `name` | string | Display name (set with `maxima action:setname`) |
-| `publickey` | string | Your Maxima public key |
-| `mls` | string | Static MLS address (if configured) |
+| `icon` | string | Icon data (0x-prefixed hex) |
+| `publickey` | string | Your Maxima RSA public key |
+| `mxpublickey` | string | Mx-formatted public key |
+| `staticmls` | boolean | Whether static MLS is configured |
+| `mls` | string | MLS host address |
 | `localidentity` | string | Local network identity |
 | `p2pidentity` | string | Public network identity |
 | `contact` | string | Full contact address for sharing |
+| `logs` | boolean | Whether Maxima logging is enabled |
+| `poll` | integer | Poll count |
 
 > **AGENT WARNING:** `localidentity` vs `p2pidentity` — use `p2pidentity` for external/public contacts. `localidentity` is only reachable on the local network.
 
@@ -341,6 +450,126 @@ List all Maxima contacts.
 
 ---
 
+## block
+
+Get current top block info.
+
+```json
+{ "status": true, "response": {
+  "block": "1958640",
+  "hash": "0x00000020243A9B0594EF3241CAE8412F7E422C209CF3507B47E939D773B31CC9",
+  "timemilli": "1771585154119",
+  "date": "Fri Feb 20 10:59:14 GMT 2026"
+}}
+```
+
+| Field | Type | Meaning |
+|-------|------|---------|
+| `block` | string | Block number (**string** here, unlike `status.chain.block` which is int) |
+| `hash` | string | Block hash (0x-prefixed) |
+| `timemilli` | string | Unix timestamp in milliseconds |
+| `date` | string | Human-readable date |
+
+---
+
+## coins
+
+List coins (UTXOs). Use `relevant:true` to show only your coins.
+
+```json
+{ "status": true, "response": [{
+  "coinid": "0x38EF6CA4AB67...",
+  "amount": "1",
+  "address": "0xF5A56FE8D41...",
+  "miniaddress": "MxG087YKYNUHY...",
+  "tokenid": "0x00",
+  "token": null,
+  "storestate": true,
+  "state": [],
+  "spent": false,
+  "mmrentry": "1323658",
+  "created": "1946515",
+  "age": "12125"
+}]}
+```
+
+| Field | Type | Meaning |
+|-------|------|---------|
+| `coinid` | string | Unique coin identifier |
+| `amount` | string | Coin value |
+| `address` | string | Owning address (hex) |
+| `miniaddress` | string | Owning address (MxG format) |
+| `tokenid` | string | Token this coin holds |
+| `token` | null or object | Token details (null for native Minima) |
+| `storestate` | boolean | Whether state is stored |
+| `state` | array | State variables attached to this coin |
+| `spent` | boolean | Whether coin has been spent |
+| `mmrentry` | string | MMR tree entry index |
+| `created` | string | Block number when created |
+| `age` | string | Number of blocks since creation |
+
+---
+
+## network
+
+Get network connection details.
+
+```json
+{ "status": true, "response": {
+  "connections": [
+    {
+      "welcome": "Minima v1.0.46",
+      "uid": "3M7O7UFNVR0EV",
+      "incoming": false,
+      "host": "89.117.60.213",
+      "port": 9001,
+      "minimaport": 9001,
+      "isconnected": true,
+      "valid": true,
+      "connected": "Fri Feb 20 10:41:58 GMT 2026"
+    }
+  ],
+  "details": {
+    "host": "172.31.116.66",
+    "hostset": false,
+    "port": 9001,
+    "connecting": 0,
+    "connected": 5,
+    "rpc": { "enabled": true, "port": 9005 },
+    "p2p": {
+      "address": "34.45.188.99:9001",
+      "isAcceptingInLinks": true,
+      "numInLinks": 0,
+      "numOutLinks": 5
+    }
+  }
+}}
+```
+
+---
+
+## peers
+
+Get known peers list.
+
+```json
+{ "status": true, "response": {
+  "peerslist": "157.173.118.242:9001,185.244.181.58:9001,...",
+  "size": 46,
+  "havepeers": true,
+  "p2penabled": true
+}}
+```
+
+| Field | Type | Meaning |
+|-------|------|---------|
+| `peerslist` | string | Comma-separated list of peer addresses |
+| `size` | integer | Number of known peers |
+| `havepeers` | boolean | Whether any peers are known |
+| `p2penabled` | boolean | Whether P2P is enabled |
+
+---
+
 ## backup
 
 Create a backup of the node.
@@ -360,25 +589,22 @@ Create a backup of the node.
 
 ---
 
-## vault
+## vault action:seed
 
-Manage private keys and seed phrase.
+Show seed phrase and lock status.
 
-**Parameters:** `(action:seed|wipekeys|restorekeys|passwordlock|passwordunlock) (seed:...) (phrase:...) (password:...) (confirm:...)`
-
-### Default (no action) — show seed phrase:
 ```json
 { "status": true, "response": {
   "phrase": "word1 word2 word3 ... word24",
-  "modifier": "0x00",
-  "locked": false,
-  "depth": { ... }
+  "seed": "0xABCD...",
+  "locked": false
 }}
 ```
 
 | Field | Type | Meaning |
 |-------|------|---------|
 | `phrase` | string | 24-word seed phrase |
+| `seed` | string | Seed as hex |
 | `locked` | boolean | Whether keys are password-locked |
 
 > **AGENT WARNING:** This command exposes the seed phrase. **Never log, display, or transmit it.** This is the master key — if lost, funds are unrecoverable. Always require user confirmation before executing `vault`.

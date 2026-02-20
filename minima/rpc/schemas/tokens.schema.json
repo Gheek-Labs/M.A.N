@@ -14,43 +14,45 @@
             "type": "string",
             "description": "Token identifier. '0x00' = native Minima"
           },
-          "token": {
+          "name": {
             "type": ["string", "object"],
-            "description": "Token name string, or object with name/url/description for custom tokens"
+            "description": "Token name. String for native Minima ('Minima'), object with name/url/description for custom tokens. NOTE: This field is 'name' in the tokens response, but 'token' in the balance response."
           },
           "total": {
             "type": "string",
             "description": "AGENT WARNING: Total supply of this token (STRING). For Minima this is ~1B. NOT wallet balance."
           },
           "decimals": {
-            "type": "string",
-            "description": "Number of decimal places (STRING, parse with int())"
+            "type": "integer",
+            "description": "Number of decimal places (INTEGER, not string)"
+          },
+          "scale": {
+            "type": "integer",
+            "description": "Token scale factor (INTEGER, not string)"
           },
           "script": {
             "type": "string",
-            "description": "Token script (usually 'RETURN TRUE')"
+            "description": "Token script (usually 'RETURN TRUE'). Only present for custom tokens."
           },
           "coinid": {
             "type": "string",
-            "description": "Coin ID of the token creation transaction"
+            "description": "Coin ID of the token creation transaction. Only present for custom tokens."
           },
           "totalamount": {
             "type": "string",
-            "description": "Total amount in smallest unit (STRING)"
-          },
-          "scale": {
-            "type": "string",
-            "description": "Token scale factor (STRING)"
+            "description": "Total amount in smallest unit (STRING). Only present for custom tokens."
           }
         },
-        "required": ["tokenid", "token", "total"]
+        "required": ["tokenid", "total"]
       }
     }
   },
   "required": ["status", "response"],
   "x-agent-warnings": [
     "total here is token supply, consistent with balance.total — NOT wallet balance",
-    "token field can be a string OR an object (for custom tokens with metadata)",
-    "decimals and scale are STRINGS, not integers"
+    "Token name field is 'name' here but 'token' in balance response — different field names!",
+    "For native Minima (0x00): only name, tokenid, total, decimals, scale are present",
+    "For custom tokens: also includes script, coinid, totalamount",
+    "decimals and scale are INTEGERS (not strings like most other numeric fields)"
   ]
 }

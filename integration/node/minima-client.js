@@ -91,32 +91,42 @@ class MinimaClient {
    * The dangerous 'total' field (token max supply) is moved to
    * supply.total so it cannot be confused with wallet balance.
    *
-   * @param {string} [tokenid] - Optional token ID filter
+   * @param {Object} [options]
+   * @param {string} [options.tokenid] - Optional token ID filter
+   * @param {boolean} [options.tokenDetails=false] - Include rich token metadata
    * @returns {Promise<Array<{
-   *   token: string,
+   *   token: string|Object,
    *   tokenid: string,
    *   sendable: string,
    *   confirmed: string,
    *   unconfirmed: string,
    *   coins: string,
-   *   supply: { total: string }
+   *   supply: { total: string },
+   *   details?: { decimals: number, scale: string, script: string, totalamount: string, created: string }
    * }>>}
    */
-  async balance(tokenid) {
-    const result = await this.command('balance');
+  async balance({ tokenid, tokenDetails = false } = {}) {
+    const cmd = tokenDetails ? 'balance tokendetails:true' : 'balance';
+    const result = await this.command(cmd);
     let entries = result.response || [];
 
-    const normalized = entries.map(entry => ({
-      token: entry.token || '',
-      tokenid: entry.tokenid || '',
-      sendable: entry.sendable || '0',
-      confirmed: entry.confirmed || '0',
-      unconfirmed: entry.unconfirmed || '0',
-      coins: entry.coins || '0',
-      supply: {
-        total: entry.total || '0',
-      },
-    }));
+    const normalized = entries.map(entry => {
+      const item = {
+        token: entry.token || '',
+        tokenid: entry.tokenid || '',
+        sendable: entry.sendable || '0',
+        confirmed: entry.confirmed || '0',
+        unconfirmed: entry.unconfirmed || '0',
+        coins: entry.coins || '0',
+        supply: {
+          total: entry.total || '0',
+        },
+      };
+      if (tokenDetails && entry.details) {
+        item.details = entry.details;
+      }
+      return item;
+    });
 
     if (tokenid) {
       return normalized.filter(b => b.tokenid === tokenid);
@@ -125,12 +135,22 @@ class MinimaClient {
   }
 
   /**
+   * List Non-Fungible Tokens (NFTs) in the wallet.
+   * NFTs are tokens with decimals:0 (indivisible, quantity = whole units).
+   * @returns {Promise<Array>} Same as balance() but only NFT entries
+   */
+  async nfts() {
+    const balances = await this.balance({ tokenDetails: true });
+    return balances.filter(b => b.details?.decimals === 0);
+  }
+
+  /**
    * Get a simple balance summary for one token.
    * @param {string} [tokenid='0x00'] - Token ID
    * @returns {Promise<{ sendable: number, confirmed: number, unconfirmed: number, coins: number }>}
    */
   async balanceSummary(tokenid = '0x00') {
-    const balances = await this.balance(tokenid);
+    const balances = await this.balance({ tokenid });
     if (!balances.length) {
       return { sendable: 0, confirmed: 0, unconfirmed: 0, coins: 0 };
     }
@@ -149,9 +169,11 @@ class MinimaClient {
    *   version: string,
    *   chainHeight: number,
    *   block: number,
-   *   devices: number,
+   *   locked: boolean,
    *   mempool: number,
+   *   connections: number,
    *   uptime: string,
+   *   blockTime: string,
    *   raw: Object
    * }>}
    */
@@ -160,14 +182,17 @@ class MinimaClient {
     const resp = result.response || {};
     const chain = resp.chain || {};
     const txpow = resp.txpow || {};
+    const network = resp.network || {};
 
     return {
       version: resp.version || '',
       chainHeight: safeInt(resp.length),
       block: safeInt(chain.block),
-      devices: safeInt(resp.devices),
+      locked: resp.locked || false,
       mempool: safeInt(txpow.mempool),
-      uptime: chain.date || '',
+      connections: safeInt(network.connected),
+      uptime: resp.uptime || '',
+      blockTime: chain.time || '',
       raw: resp,
     };
   }
@@ -202,20 +227,22 @@ class MinimaClient {
   }
 
   /**
-   * Hash data using Minima's Keccak-256.
+   * Hash data using Minima's Keccak-256 / SHA3.
    *
    * WARNING: This is a LOCAL operation. It does NOT write to the blockchain
    * and does NOT return a txpowid. To create an on-chain record, use
    * recordOnChain() instead.
    *
    * @param {string} data - String or 0x-prefixed hex data
-   * @returns {Promise<{ input: string, hash: string }>}
+   * @returns {Promise<{ input: string, data: string, type: string, hash: string }>}
    */
   async hash(data) {
     const result = await this.command(`hash data:${data}`);
     const resp = result.response || {};
     return {
       input: resp.input || '',
+      data: resp.data || '',
+      type: resp.type || '',
       hash: resp.hash || '',
     };
   }
@@ -270,15 +297,24 @@ class MinimaClient {
 
   /**
    * Generate 256-bit cryptographic random value.
-   * @returns {Promise<string>} 0x-prefixed random hex
+   * @returns {Promise<{ random: string, hashed: string, keycode: string, size: string, type: string }>}
    */
   async random() {
     const result = await this.command('random');
-    return result.response?.random || '';
+    const resp = result.response || {};
+    return {
+      random: resp.random || '',
+      hashed: resp.hashed || '',
+      keycode: resp.keycode || '',
+      size: resp.size || '',
+      type: resp.type || '',
+    };
   }
 
   /**
    * List all tokens known to this node.
+   * Note: In the tokens response, the name field is 'name' (not 'token' as in balance).
+   * Note: decimals and scale are already integers from the node.
    * @returns {Promise<Array<{ tokenid: string, name: string, supplyTotal: string, decimals: number, scale: number }>>}
    */
   async tokens() {
@@ -286,8 +322,8 @@ class MinimaClient {
     const entries = result.response || [];
 
     return entries.map(entry => {
-      const token = entry.token;
-      const name = typeof token === 'string' ? token : (token?.name || String(token));
+      const nameField = entry.name ?? entry.token;
+      const name = typeof nameField === 'string' ? nameField : (nameField?.name || String(nameField));
 
       return {
         tokenid: entry.tokenid || '',
@@ -315,7 +351,7 @@ class MinimaClient {
 
   /**
    * Get Maxima identity and contact details.
-   * @returns {Promise<{ name: string, publickey: string, mls: string, p2pidentity: string, localidentity: string, contact: string }>}
+   * @returns {Promise<{ name: string, publickey: string, mxpublickey: string, staticmls: boolean, mls: string, p2pidentity: string, localidentity: string, contact: string, logs: boolean, poll: number }>}
    */
   async maximaInfo() {
     const result = await this.command('maxima action:info');
@@ -323,10 +359,14 @@ class MinimaClient {
     return {
       name: resp.name || '',
       publickey: resp.publickey || '',
+      mxpublickey: resp.mxpublickey || '',
+      staticmls: resp.staticmls || false,
       mls: resp.mls || '',
       p2pidentity: resp.p2pidentity || '',
       localidentity: resp.localidentity || '',
       contact: resp.contact || '',
+      logs: resp.logs || false,
+      poll: resp.poll || 0,
     };
   }
 

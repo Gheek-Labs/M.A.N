@@ -23,6 +23,7 @@ Complete command list for agent programmatic access via `http://localhost:9005/<
 | Command | Description |
 |---------|-------------|
 | `balance` | Show balances (see schema below) |
+| `balance tokendetails:true` | Balances with rich token metadata (NFT detection) |
 | `coins` | List coins |
 | `keys` | List wallet keys |
 | `getaddress` | Get default address |
@@ -50,6 +51,29 @@ Complete command list for agent programmatic access via `http://localhost:9005/<
 > - Display `confirmed` as the full wallet balance (includes locked coins).
 > - Display `unconfirmed` as pending incoming.
 > - **Never** display `total` as a balance — it is ~1 billion for Minima.
+
+### `balance tokendetails:true` — Rich Token Details
+
+When called with `tokendetails:true`, custom tokens include a `token` object (with `name`, `url`, `description`, `ticker`) and a `details` object:
+
+```json
+{
+  "token": { "name": "porq", "url": "...", "description": "...", "ticker": "porq" },
+  "tokenid": "0x050DFE...",
+  "sendable": "10", "confirmed": "10", "unconfirmed": "0",
+  "total": "1000000000000",
+  "details": {
+    "decimals": 8,       // INTEGER — 0 means NFT (non-fungible)
+    "script": "RETURN TRUE",
+    "scale": "36",
+    "created": "794199"
+  }
+}
+```
+
+> **NFT Detection:** Filter for `details.decimals == 0` to find Non-Fungible Tokens.
+> This is a **client-side filter** — `decimals` is not a server parameter.
+> SDK provides `nfts()` method for convenience.
 
 See also: [RESPONSE_SCHEMAS.md](RESPONSE_SCHEMAS.md) for full field semantics.
 
