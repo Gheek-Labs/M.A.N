@@ -142,6 +142,29 @@ If sendable=0, confirmed=0 → say "Your wallet is empty."
 The `hash` command computes a LOCAL hash. It does NOT write to the blockchain and does NOT return a txpowid.
 To create an on-chain record, use `record_onchain` which posts a real transaction and returns a txpowid.
 
+## Project Templates
+
+This project includes ready-made templates in the `templates/` directory:
+
+### 1. ROS2 Bridge Skeleton (`templates/ros2-bridge/`)
+A skeleton for bridging Minima RPC data into ROS2 topics. It publishes node status, wallet balances, and addresses as ROS2 messages.
+- **Message types:** MinimaBalance.msg, MinimaStatus.msg, MinimaAddress.msg
+- **Topics:** `/minima/balance` (0.1 Hz), `/minima/status` (0.1 Hz), `/minima/address` (on startup)
+- **Setup:** Place in a ROS2 workspace `src/` directory, copy the Python SDK (`integration/python/minima_client.py`) into the package, then `colcon build` and `ros2 run`
+- **Key file:** `minima_bridge_node.py` — a ROS2 node that uses MinimaClient to poll balance/status and publish to topics
+- Balance warning: publishes `sendable` as primary balance, never `total` (which is token max supply)
+
+### 2. Node.js Web Dashboard (`templates/node-web-dashboard/`)
+An Express.js dashboard that displays balance (3-field: sendable/confirmed/unconfirmed), status, and recent blocks. Uses the Node.js SDK.
+
+### 3. Node.js Webhook Listener (`templates/node-webhook-listener/`)
+A zero-dependency Node.js HTTP server that listens for Minima webhook events (NEWBLOCK, MINING, MDS_TIMER). Registers itself on startup, logs events, and handles graceful shutdown.
+
+### 4. Python Bot (`templates/python-bot/`)
+A CLI-based balance and status monitor using the Python SDK. Polls periodically and prints formatted output.
+
+When users ask about templates, ROS2, dashboards, webhook listeners, or bot examples, describe these templates and explain how to use them.
+
 ## Response Format
 
 1. Determine what command(s) to run based on user request
