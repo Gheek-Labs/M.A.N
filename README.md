@@ -2,14 +2,29 @@
 
 Agent-friendly, headless Minima blockchain node with stable MxID identity, natural language chat interface, and integration SDKs for Node.js and Python.
 
+---
+
+> **AGENTS: START HERE** — Read [`AGENT_START_HERE.md`](AGENT_START_HERE.md) first. It contains the mandatory 5-step bootstrap sequence (start node → backup → MxID → verify peers) that must be completed before using any SDKs, templates, or advanced features. Skipping this will result in an unstable node with no backup and no identity.
+>
+> Full agent operations guide: [`minima/AGENT_QUICKSTART.md`](minima/AGENT_QUICKSTART.md)
+
+---
+
 ## Quick Start
 
+**You must complete these steps in order. Do not skip ahead to features.**
+
 ```bash
-./bootstrap.sh        # One-click setup (downloads JAR on first run, ~70MB)
-./minima/start.sh     # Start the node
+./bootstrap.sh              # 1. Initialize (downloads JAR on first run, ~70MB)
+./minima/start.sh           # 2. Start the node
+./minima/cli.sh status      # 3. Verify node is running
+./minima/cli.sh vault       # 4. Back up seed phrase IMMEDIATELY
+./minima/mxid_init.sh       # 5. Initialize stable identity (MxID)
 ```
 
 The node starts with RPC enabled on `localhost:9005`. Open the webview to access the chat interface on port 5000.
+
+**Only after completing all 5 steps above should you proceed to features below.**
 
 ## Key Features
 
@@ -24,23 +39,21 @@ The node starts with RPC enabled on `localhost:9005`. Open the webview to access
 
 ## Agent Quickstart
 
-**1. Run node:** `./minima/start.sh`
+> **Prerequisite:** Complete the 5-step bootstrap above first. See [`AGENT_START_HERE.md`](AGENT_START_HERE.md) for the full onboarding guide.
 
-**2. Back up immediately:** `./minima/cli.sh vault` (view seed phrase)
+Once bootstrapped, explore capabilities:
 
-**3. Initialize MxID:** `./minima/mxid_init.sh` (stable identity)
+**Explore MDS:** `./minima/mds_list.sh --table` (view MiniDapps)
 
-**4. Explore MDS:** `./minima/mds_list.sh --table` (view MiniDapps)
+**Get Maxima address:** `./minima/get_maxima.sh`
 
-**5. Get Maxima address:** `./minima/get_maxima.sh`
+**Send value:** `./minima/cli.sh "send address:MxG... amount:1"`
 
-**6. Send value:** `./minima/cli.sh "send address:MxG... amount:1"`
+**Add contact:** `./minima/cli.sh "maxcontacts action:add contact:MxG...@IP:PORT"`
 
-**7. Add contact:** `./minima/cli.sh "maxcontacts action:add contact:MxG...@IP:PORT"`
+**Send message:** `./minima/cli.sh "maxima action:send to:MxG... application:app data:hello"`
 
-**8. Send message:** `./minima/cli.sh "maxima action:send to:MxG... application:app data:hello"`
-
-See [AGENT_QUICKSTART.md](minima/AGENT_QUICKSTART.md) for full details.
+See [`minima/AGENT_QUICKSTART.md`](minima/AGENT_QUICKSTART.md) for the full operations guide.
 
 ## Chat Interface
 
@@ -293,7 +306,8 @@ Reference implementations for common integration patterns:
 
 | Document | Description |
 |----------|-------------|
-| [Agent Quickstart](minima/AGENT_QUICKSTART.md) | Essential operations for agents |
+| [**START HERE**](AGENT_START_HERE.md) | Mandatory bootstrap sequence for agents |
+| [Agent Quickstart](minima/AGENT_QUICKSTART.md) | Full agent operations guide |
 | [Commands Reference](minima/COMMANDS.md) | Full RPC command list |
 | [Response Schemas](minima/RESPONSE_SCHEMAS.md) | Field semantics for all 25 commands |
 | [On-Chain Records](minima/ONCHAIN_RECORDS.md) | Transaction builder recipe |
@@ -308,6 +322,7 @@ Reference implementations for common integration patterns:
 
 ```
 /
+├── AGENT_START_HERE.md             # Mandatory agent onboarding (START HERE)
 ├── bootstrap.sh                   # One-click setup script
 ├── main.py                        # Entry point
 ├── replit.md                      # Project context (agent persistent memory)

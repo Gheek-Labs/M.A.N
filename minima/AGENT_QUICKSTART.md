@@ -1,5 +1,7 @@
 # MxNode - Agent Quickstart
 
+> **First time here?** Complete the mandatory bootstrap sequence in [`AGENT_START_HERE.md`](../AGENT_START_HERE.md) before proceeding. The bootstrap ensures your node is running, backed up, and has a stable MxID identity.
+
 Quick reference for programmatic Minima node operations.
 
 **Full command reference:** See [COMMANDS.md](COMMANDS.md)
@@ -132,6 +134,21 @@ AUTO_DETECT_MLS=false ./minima/mxid_init.sh                    # Manual mode
 ```
 
 **Full MxID specification:** See [MXID.md](MXID.md)
+
+---
+
+## Readiness Checkpoint
+
+Before proceeding to advanced features, verify your node is fully bootstrapped:
+
+```bash
+./minima/cli.sh status          # Should return status: true
+./minima/cli.sh balance         # Should return balance array (may be empty)
+./minima/mxid_info.sh           # Should return your MxID identity card
+./minima/cli.sh peers           # Should show connected peers
+```
+
+If all four return valid responses, your node is ready. Everything below is optional exploration.
 
 ---
 

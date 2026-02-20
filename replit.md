@@ -3,6 +3,19 @@
 ## Overview
 A one-click, agent-friendly, headless Minima blockchain node setup with stable MxID identity system and natural language chat interface. The node runs with RPC enabled for programmatic interaction.
 
+## Agent Onboarding — START HERE
+
+> **Before using any SDK, chat, template, or RPC command, complete the mandatory bootstrap sequence.** Read [`AGENT_START_HERE.md`](AGENT_START_HERE.md) for the full onboarding guide.
+
+### Mandatory Bootstrap Sequence
+1. `./bootstrap.sh` — Initialize environment (downloads JAR on first run)
+2. `./minima/start.sh` — Start the node (verify: `./minima/cli.sh status`)
+3. `./minima/cli.sh vault` — Back up seed phrase IMMEDIATELY (unrecoverable if lost)
+4. `./minima/mxid_init.sh` — Initialize stable identity (requires `jq`)
+5. `./minima/cli.sh peers` — Verify peer connectivity
+
+**Full agent operations guide:** [`minima/AGENT_QUICKSTART.md`](minima/AGENT_QUICKSTART.md)
+
 ## Agent Integration Guide
 
 > **Full integration skill:** `.agents/skills/minima-integration/SKILL.md` — load this for code examples, error cases, and payload docs.
@@ -15,6 +28,7 @@ A one-click, agent-friendly, headless Minima blockchain node setup with stable M
 ## Project Structure
 ```
 /
+├── AGENT_START_HERE.md  # Mandatory agent onboarding (START HERE)
 ├── bootstrap.sh       # One-click setup script
 ├── chat/              # Natural language chat interface
 │   ├── app.py         # Flask web server (port 5000)
@@ -181,6 +195,7 @@ See `minima/RESPONSE_SCHEMAS.md` for complete field semantics, types, and agent 
 Machine-readable schemas in `minima/rpc/schemas/*.schema.json`.
 
 ## Recent Changes
+- 2026-02-20: Agent onboarding overhaul: created AGENT_START_HERE.md at root with mandatory 5-step bootstrap sequence, added START HERE banners to README.md, SKILL.md, and replit.md, added Readiness Checkpoint to AGENT_QUICKSTART.md, updated project structure in all entry-point files
 - 2026-02-20: Phase 3+4: KISSVM glossary (KISSVM.md), transaction builder recipe in ONCHAIN_RECORDS.md, rewritten record_data.sh with --data/--port/--burn/--mine flags, SDK port/burn support. Webhooks: live-captured 4 event types (NEWBLOCK, MINING, MDS_TIMER_10S/60S), created WEBHOOKS.md with full payload docs, node-webhook-listener template.
 - 2026-02-20: Phase 6: Full schema coverage — 25 RPC command schemas. Updated send schema with live transaction response (superblock/cascadelevels int, nonce/magic strings, witness/burntxn/txnlist structure). Added schemas: keys, newaddress, scripts, history, mds, burn, tokencreate, consolidate, maxsign, maxverify. Updated RESPONSE_SCHEMAS.md with all 25 command sections. Updated maxcontacts to show allowallcontacts wrapper.
 - 2026-02-20: Phase 5: Live-validated schemas, SDKs, and templates against running node. Fixed: status (removed devices, corrected int/float types), hash (added data/type fields), random (added size/hashed/type/keycode), tokens (decimals/scale are int, name vs token field), maxima (added icon/mxpublickey/staticmls/poll). Added balance tokendetails:true + NFT detection (decimals:0). Added nfts() to both SDKs.

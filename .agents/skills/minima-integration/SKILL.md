@@ -5,6 +5,16 @@ description: Integrate with the local Minima blockchain node. Use when building 
 
 # Minima Node Integration
 
+> **PREREQUISITE: BOOTSTRAP FIRST** — Before using any SDK, template, or RPC command, the node must be fully bootstrapped. If the node is not yet running with a backup and MxID identity, read [`AGENT_START_HERE.md`](../../AGENT_START_HERE.md) and complete the 5-step sequence:
+>
+> 1. `./bootstrap.sh` — Initialize environment
+> 2. `./minima/start.sh` — Start the node (verify with `./minima/cli.sh status`)
+> 3. `./minima/cli.sh vault` — Back up seed phrase immediately
+> 4. `./minima/mxid_init.sh` — Initialize stable identity (requires `jq`)
+> 5. `./minima/cli.sh peers` — Verify peer connectivity
+>
+> **Do not attempt SDK calls or integrations until the node returns `status: true`.** Full operations guide: [`minima/AGENT_QUICKSTART.md`](../../minima/AGENT_QUICKSTART.md)
+
 This repo runs a headless Minima blockchain node with RPC enabled. Use the SDKs in `integration/` — never raw `http.get()`.
 
 ## 1. Ports & Endpoints
