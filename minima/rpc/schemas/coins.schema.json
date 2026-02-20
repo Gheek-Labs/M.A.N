@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "coins",
+  "description": "Lists coins (UTXOs). Use 'relevant:true' to show only your coins.",
+  "type": "object",
+  "properties": {
+    "status": { "type": "boolean" },
+    "response": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "coinid": { "type": "string", "description": "Unique coin identifier, 0x-prefixed" },
+          "amount": { "type": "string", "description": "Coin value (STRING)" },
+          "address": { "type": "string", "description": "Owning address (hex, 0x-prefixed)" },
+          "miniaddress": { "type": "string", "description": "Owning address (MxG format)" },
+          "tokenid": { "type": "string", "description": "Token this coin holds. 0x00 = native Minima" },
+          "token": { "type": ["null", "object"], "description": "Token details object, null for native Minima" },
+          "storestate": { "type": "boolean", "description": "Whether state is stored with this coin" },
+          "state": { "type": "array", "description": "State variables attached to this coin" },
+          "spent": { "type": "boolean", "description": "Whether coin has been spent" },
+          "mmrentry": { "type": "string", "description": "MMR tree entry index (STRING)" },
+          "created": { "type": "string", "description": "Block number when created (STRING)" },
+          "age": { "type": "string", "description": "Number of blocks since creation (STRING)" }
+        },
+        "required": ["coinid", "amount", "address", "tokenid", "spent"]
+      }
+    }
+  },
+  "required": ["status", "response"],
+  "x-parameters": {
+    "relevant": "true/false — only show coins belonging to this wallet (default: false)",
+    "address": "Filter by address",
+    "coinid": "Get specific coin by ID",
+    "tokenid": "Filter by token ID",
+    "sendable": "true — only coins that can be spent"
+  }
+}

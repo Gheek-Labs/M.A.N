@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "getaddress",
+  "description": "Returns the node's current default receiving address.",
+  "type": "object",
+  "properties": {
+    "status": { "type": "boolean" },
+    "response": {
+      "type": "object",
+      "properties": {
+        "script": { "type": "string", "description": "Script associated with this address (e.g., RETURN SIGNEDBY(0x...))" },
+        "address": { "type": "string", "description": "Hex address (0x-prefixed)" },
+        "miniaddress": { "type": "string", "description": "Human-readable MxG-prefixed address" },
+        "simple": { "type": "boolean", "description": "Whether this is a simple SIGNEDBY address" },
+        "default": { "type": "boolean", "description": "Whether this is the default address" },
+        "publickey": { "type": "string", "description": "Associated public key (0x-prefixed)" },
+        "track": { "type": "boolean", "description": "Whether this address is tracked for balance" }
+      },
+      "required": ["script", "address", "miniaddress", "simple", "default", "publickey", "track"]
+    }
+  },
+  "required": ["status", "response"]
+}

@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "peers",
+  "description": "Returns list of known peers in the network.",
+  "type": "object",
+  "properties": {
+    "status": { "type": "boolean" },
+    "response": {
+      "type": "object",
+      "properties": {
+        "peerslist": { "type": "string", "description": "Comma-separated list of peer addresses (IP:port)" },
+        "size": { "type": "integer", "description": "Number of known peers (INTEGER)" },
+        "havepeers": { "type": "boolean", "description": "Whether any peers are known" },
+        "p2penabled": { "type": "boolean", "description": "Whether P2P is enabled" }
+      },
+      "required": ["peerslist", "size"]
+    }
+  },
+  "required": ["status", "response"]
+}

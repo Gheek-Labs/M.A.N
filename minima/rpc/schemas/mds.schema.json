@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "mds",
+  "description": "MiniDapp System (MDS) status, password, and installed MiniDapps.",
+  "type": "object",
+  "properties": {
+    "status": { "type": "boolean" },
+    "response": {
+      "type": "object",
+      "properties": {
+        "enabled": { "type": "boolean", "description": "Whether MDS is enabled" },
+        "connect": { "type": "string", "description": "MDS connection URL (https://IP:PORT)" },
+        "password": { "type": "string", "description": "MDS access password" },
+        "minidappdir": { "type": "string", "description": "Directory where MiniDapps are installed" },
+        "trustedmdsuid": { "type": "string", "description": "Trusted MDS UID for internal apps" },
+        "untrustedmdsuid": { "type": "string", "description": "Untrusted MDS UID for external apps" },
+        "minidapps": {
+          "type": "array",
+          "description": "List of installed MiniDapps",
+          "items": {
+            "type": "object",
+            "properties": {
+              "uid": { "type": "string", "description": "MiniDapp unique identifier (0x-prefixed)" },
+              "conf": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string", "description": "MiniDapp display name" },
+                  "icon": { "type": "string", "description": "Icon filename" },
+                  "version": { "type": "string", "description": "MiniDapp version" },
+                  "description": { "type": "string", "description": "MiniDapp description" },
+                  "browser": { "type": "string", "description": "Browser type (e.g., 'internal')" },
+                  "permission": { "type": "string", "description": "Permission level: 'read' or 'write'" },
+                  "category": { "type": "string", "description": "App category (optional)" }
+                },
+                "required": ["name", "version"]
+              },
+              "sessionid": { "type": "string", "description": "Current session ID for this MiniDapp" }
+            },
+            "required": ["uid", "conf"]
+          }
+        }
+      },
+      "required": ["enabled", "password", "minidapps"]
+    }
+  },
+  "required": ["status", "response"],
+  "x-agent-warnings": [
+    "MDS password is sensitive — do not log or display unnecessarily",
+    "MDS runs on port 9003 (P2P port + 2) with SSL encryption",
+    "permission 'write' allows MiniDapps to modify node state",
+    "permission 'read' only allows reading data"
+  ],
+  "x-parameters": {
+    "action": "list | install | uninstall",
+    "file": "Path to .mds.zip file (for install)",
+    "uid": "MiniDapp UID (for uninstall)"
+  }
+}

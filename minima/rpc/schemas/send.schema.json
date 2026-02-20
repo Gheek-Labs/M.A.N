@@ -7,25 +7,163 @@
     "status": { "type": "boolean" },
     "response": {
       "type": "object",
-      "description": "Same schema as txnpost response — full TxPoW object",
-      "$ref": "txnpost.schema.json#/properties/response"
+      "description": "Full TxPoW object returned on successful send",
+      "properties": {
+        "txpowid": { "type": "string", "description": "Transaction ID (0x-prefixed). Use for explorer: https://explorer.minima.global/transactions/<txpowid>" },
+        "isblock": { "type": "boolean" },
+        "istransaction": { "type": "boolean" },
+        "superblock": { "type": "integer", "description": "-1 if not a superblock (INTEGER)" },
+        "size": { "type": "integer", "description": "TxPoW size in bytes (INTEGER)" },
+        "burn": { "type": "integer", "description": "Burn amount (INTEGER)" },
+        "header": {
+          "type": "object",
+          "properties": {
+            "chainid": { "type": "string" },
+            "block": { "type": "string", "description": "Block height (STRING)" },
+            "blkdiff": { "type": "string" },
+            "cascadelevels": { "type": "integer", "description": "Cascade levels (INTEGER)" },
+            "superparents": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "difficulty": { "type": "integer" },
+                  "count": { "type": "integer" },
+                  "parent": { "type": "string" }
+                }
+              }
+            },
+            "magic": {
+              "type": "object",
+              "properties": {
+                "currentmaxtxpowsize": { "type": "string" },
+                "currentmaxkissvmops": { "type": "string" },
+                "currentmaxtxn": { "type": "string" },
+                "currentmintxpowwork": { "type": "string" }
+              }
+            },
+            "mmr": { "type": "string" },
+            "total": { "type": "string", "description": "Total Minima in circulation (STRING, large decimal)" },
+            "customhash": { "type": "string" },
+            "txbodyhash": { "type": "string" },
+            "nonce": { "type": "string", "description": "Nonce (STRING)" },
+            "timemilli": { "type": "string", "description": "Unix timestamp in milliseconds (STRING)" },
+            "date": { "type": "string", "description": "Human-readable date" }
+          }
+        },
+        "hasbody": { "type": "boolean" },
+        "body": {
+          "type": "object",
+          "properties": {
+            "prng": { "type": "string" },
+            "txndiff": { "type": "string" },
+            "txn": {
+              "type": "object",
+              "properties": {
+                "inputs": {
+                  "type": "array",
+                  "description": "Coins consumed by this transaction",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "coinid": { "type": "string" },
+                      "amount": { "type": "string", "description": "Coin value (STRING)" },
+                      "address": { "type": "string" },
+                      "miniaddress": { "type": "string" },
+                      "tokenid": { "type": "string" },
+                      "token": { "type": ["null", "object"] },
+                      "storestate": { "type": "boolean" },
+                      "state": { "type": "array" },
+                      "spent": { "type": "boolean" },
+                      "mmrentry": { "type": "string" },
+                      "created": { "type": "string" }
+                    }
+                  }
+                },
+                "outputs": {
+                  "type": "array",
+                  "description": "Coins created (destination + change)",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "coinid": { "type": "string" },
+                      "amount": { "type": "string" },
+                      "address": { "type": "string" },
+                      "miniaddress": { "type": "string" },
+                      "tokenid": { "type": "string" },
+                      "token": { "type": ["null", "object"] },
+                      "storestate": { "type": "boolean" },
+                      "state": { "type": "array" },
+                      "spent": { "type": "boolean" },
+                      "mmrentry": { "type": "string" },
+                      "created": { "type": "string" }
+                    }
+                  }
+                },
+                "state": { "type": "array" },
+                "linkhash": { "type": "string" },
+                "transactionid": { "type": "string", "description": "Internal tx hash — NOT the same as txpowid. Do NOT use for explorer links." }
+              }
+            },
+            "witness": {
+              "type": "object",
+              "description": "Cryptographic proofs (signatures, MMR proofs, scripts)",
+              "properties": {
+                "signatures": { "type": "array" },
+                "mmrproofs": { "type": "array" },
+                "scripts": { "type": "array" }
+              }
+            },
+            "burntxn": {
+              "type": "object",
+              "description": "Burn transaction (empty if no burn)",
+              "properties": {
+                "inputs": { "type": "array" },
+                "outputs": { "type": "array" },
+                "state": { "type": "array" },
+                "linkhash": { "type": "string" },
+                "transactionid": { "type": "string" }
+              }
+            },
+            "burnwitness": {
+              "type": "object",
+              "properties": {
+                "signatures": { "type": "array" },
+                "mmrproofs": { "type": "array" },
+                "scripts": { "type": "array" }
+              }
+            },
+            "txnlist": {
+              "type": "array",
+              "description": "List of referenced TxPoW IDs",
+              "items": { "type": "string" }
+            }
+          }
+        }
+      },
+      "required": ["txpowid", "isblock", "istransaction", "header", "body"]
     },
     "error": {
       "type": "string",
-      "description": "Error message when status is false (e.g., insufficient balance)"
+      "description": "Error message when status is false (e.g., 'Insufficient funds')"
     }
   },
   "required": ["status"],
   "x-agent-warnings": [
-    "On success: status=true, response contains TxPoW with txpowid",
+    "On success: status=true, response contains full TxPoW with txpowid",
     "On failure: status=false, error contains message (e.g., 'Insufficient funds')",
-    "Always check status before accessing response",
-    "split: parameter (1-10) divides amount into multiple output coins",
-    "Use getaddress first to get own address for self-splits"
+    "txpowid is the external transaction ID — use for explorer links",
+    "transactionid is the internal hash — do NOT use for explorer links",
+    "amount fields in inputs/outputs are STRINGS",
+    "superblock, size, burn, cascadelevels are INTEGERS",
+    "block, timemilli, nonce are STRINGS",
+    "split:N parameter (1-10) divides amount into multiple output coins",
+    "Use getaddress first to get own address for self-splits",
+    "Requires user confirmation before executing"
   ],
   "x-parameters": {
-    "address": "Destination address (MxG... or 0x...)",
-    "amount": "Amount to send (number or string)",
+    "address": "Destination address (MxG... or 0x...). REQUIRED.",
+    "amount": "Amount to send. REQUIRED.",
     "tokenid": "Token ID (default 0x00 for Minima)",
     "split": "Split into N output coins (1-10, optional)",
     "burn": "Amount to burn as fee (optional)"

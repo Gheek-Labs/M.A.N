@@ -217,25 +217,42 @@ Send Minima or tokens to an address. Returns full TxPoW on success.
 ### Success response:
 ```json
 { "status": true, "response": {
-  "txpowid": "0xE121FF1C82B2B1E50A...",
+  "txpowid": "0x73BD3282362A9A21AFB51FA0EE6DCD348A43623A5E86AFB6DEBC445290E17EA3",
   "isblock": false,
   "istransaction": false,
-  "size": 5302,
+  "superblock": -1,
+  "size": 6011,
   "burn": 0,
   "header": {
-    "block": "1931455",
-    "timemilli": "1770223384435",
-    "date": "Wed Feb 04 16:43:04 GMT 2026"
+    "chainid": "0x00",
+    "block": "1958665",
+    "blkdiff": "0x513CFFB28058BAE...",
+    "cascadelevels": 32,
+    "superparents": [{ "difficulty": 1, "count": 2, "parent": "0x00000022..." }],
+    "magic": { "currentmaxtxpowsize": "65536", "currentmaxkissvmops": "1024", "currentmaxtxn": "256" },
+    "mmr": "0x9880AB006DB21B7E...",
+    "total": "999979665.55068805473389496137790014706585395910793557",
+    "customhash": "0x00",
+    "txbodyhash": "0x3289BFAF0F00362B...",
+    "nonce": "0",
+    "timemilli": "1771586512139",
+    "date": "Fri Feb 20 11:21:52 GMT 2026"
   },
+  "hasbody": true,
   "body": {
+    "prng": "0xA36B67B305...",
+    "txndiff": "0x41D58485E1D3...",
     "txn": {
-      "inputs": [{ "coinid": "0x...", "amount": "2", "address": "0x...", "miniaddress": "MxG08...", "tokenid": "0x00" }],
-      "outputs": [
-        { "coinid": "0x...", "amount": "1", "address": "0x...", "miniaddress": "MxG08...", "tokenid": "0x00" },
-        { "coinid": "0x...", "amount": "1", "address": "0x...", "miniaddress": "MxG08...", "tokenid": "0x00" }
-      ],
-      "transactionid": "0x8446..."
-    }
+      "inputs": [{ "coinid": "0x88AF...", "amount": "1", "address": "0x171C...", "miniaddress": "MxG080N3G...", "tokenid": "0x00", "token": null, "storestate": true, "state": [], "spent": false, "mmrentry": "1319854", "created": "1932976" }],
+      "outputs": [{ "coinid": "0xA6AE...", "amount": "1", "address": "0x52DA...", "miniaddress": "MxG082WR9...", "tokenid": "0x00", "token": null, "storestate": true, "state": [], "spent": false, "mmrentry": "0", "created": "0" }],
+      "state": [],
+      "linkhash": "0x00",
+      "transactionid": "0x6479CB0BCAB408A431A0BABC360B38E509E3FF1036793E89C71677510357F32E"
+    },
+    "witness": { "signatures": [...], "mmrproofs": [...], "scripts": [...] },
+    "burntxn": { "inputs": [], "outputs": [], "state": [], "linkhash": "0x00", "transactionid": "0xDECA..." },
+    "burnwitness": { "signatures": [], "mmrproofs": [], "scripts": [] },
+    "txnlist": ["0x000014691E8B..."]
   }
 }}
 ```
@@ -248,18 +265,34 @@ Send Minima or tokens to an address. Returns full TxPoW on success.
 | Field | Type | Meaning |
 |-------|------|---------|
 | `txpowid` | string | Transaction ID for explorer: `https://explorer.minima.global/transactions/<txpowid>` |
+| `superblock` | **integer** | Superblock level (-1 if not a superblock) |
+| `size` | **integer** | TxPoW size in bytes |
+| `burn` | **integer** | Burn amount |
 | `header.block` | string | Block height at transaction time |
+| `header.cascadelevels` | **integer** | Cascade levels |
+| `header.nonce` | string | Nonce (STRING, not integer) |
 | `header.timemilli` | string | Unix timestamp in milliseconds |
-| `body.txn.inputs` | array | Coins consumed by this transaction |
+| `header.total` | string | Total Minima in circulation (large decimal STRING) |
+| `header.magic.*` | string | Network consensus parameters (all STRINGS) |
+| `hasbody` | boolean | Whether body is present |
+| `body.txn.inputs` | array | Coins consumed (each has coinid/amount/address/miniaddress/tokenid/mmrentry/created) |
 | `body.txn.outputs` | array | Coins created (destination + change) |
 | `body.txn.transactionid` | string | Internal tx hash (different from `txpowid`) |
+| `body.witness` | object | Cryptographic proofs: signatures, MMR proofs, scripts |
+| `body.burntxn` | object | Burn transaction (empty inputs/outputs if no burn) |
+| `body.txnlist` | array | Referenced TxPoW IDs |
 
 > **AGENT WARNING:**
 > - `txpowid` is the external transaction ID. Use it for explorer links.
 > - `transactionid` is the internal hash — do **not** use for explorer links.
+> - `superblock`, `size`, `burn`, `cascadelevels` are **integers**.
+> - `block`, `timemilli`, `nonce`, `total`, `magic.*` values are **strings**.
 > - `amount` fields in inputs/outputs are **strings**.
+> - Input coins include `mmrentry` (string) and `created` (string block number).
+> - Output coins have `mmrentry: "0"` and `created: "0"` (not yet confirmed).
 > - `split:N` parameter (1-10) divides the amount into multiple output coins.
 > - Use `getaddress` first to get own address for self-splits.
+> - Requires user confirmation before executing.
 
 ---
 
@@ -421,32 +454,39 @@ Get your Maxima identity and contact details.
 List all Maxima contacts.
 
 ```json
-{ "status": true, "response": [{
-  "id": 0,
-  "publickey": "0x3081...",
-  "currentaddress": "Mx...@1.2.3.4:9001",
-  "myaddress": "Mx...@1.2.3.4:9001",
-  "lastseen": "1706900000000",
-  "date": "Wed Feb 04 16:43:04 GMT 2026",
-  "extradata": {
-    "name": "Alice",
-    "minimaaddress": "MxG08...",
-    "topblock": "1931455",
-    "checkblock": "1931400",
-    "checkhash": "0xABC..."
-  },
-  "samechain": true
-}]}
+{ "status": true, "response": {
+  "allowallcontacts": false,
+  "contacts": [{
+    "id": 0,
+    "publickey": "0x3081...",
+    "currentaddress": "Mx...@1.2.3.4:9001",
+    "myaddress": "Mx...@1.2.3.4:9001",
+    "lastseen": "1706900000000",
+    "date": "Wed Feb 04 16:43:04 GMT 2026",
+    "extradata": {
+      "name": "Alice",
+      "minimaaddress": "MxG08...",
+      "topblock": "1931455",
+      "checkblock": "1931400",
+      "checkhash": "0xABC..."
+    },
+    "samechain": true
+  }]
+}}
 ```
 
 | Field | Type | Meaning |
 |-------|------|---------|
-| `id` | integer | Contact ID (use for send-by-ID) |
-| `publickey` | string | Contact's Maxima public key |
-| `currentaddress` | string | Contact's current reachable address |
-| `lastseen` | string | Unix timestamp in millis (STRING) |
-| `extradata.name` | string | Contact's display name |
-| `samechain` | boolean | Whether contact is on same chain |
+| `allowallcontacts` | boolean | Whether new contacts are auto-accepted |
+| `contacts` | array | List of contacts |
+| `contacts[].id` | **integer** | Contact ID (use for send-by-ID) |
+| `contacts[].publickey` | string | Contact's Maxima public key |
+| `contacts[].currentaddress` | string | Contact's current reachable address |
+| `contacts[].lastseen` | string | Unix timestamp in millis (STRING, not integer) |
+| `contacts[].extradata.name` | string | Contact's display name |
+| `contacts[].samechain` | boolean | Whether contact is on same chain |
+
+> **AGENT WARNING:** Each contact consumes Tx-PoW — limit to ~20 contacts. Use `poll:true` when sending for retry on offline contacts.
 
 ---
 
@@ -608,3 +648,279 @@ Show seed phrase and lock status.
 | `locked` | boolean | Whether keys are password-locked |
 
 > **AGENT WARNING:** This command exposes the seed phrase. **Never log, display, or transmit it.** This is the master key — if lost, funds are unrecoverable. Always require user confirmation before executing `vault`.
+
+---
+
+## keys
+
+List wallet signing keys with usage stats.
+
+```json
+{ "status": true, "response": {
+  "keys": [{
+    "size": 64,
+    "depth": 3,
+    "uses": 1,
+    "maxuses": 262144,
+    "modifier": "0x01",
+    "publickey": "0x364BDF449C0BB5D58636CE33DC55E59D7C920191A1F188AADA6BFD956743A8B3"
+  }]
+}}
+```
+
+| Field | Type | Meaning |
+|-------|------|---------|
+| `size` | **integer** | Key size in bytes |
+| `depth` | **integer** | Winternitz depth |
+| `uses` | **integer** | Number of times key has been used |
+| `maxuses` | **integer** | Maximum allowed uses before exhaustion |
+| `modifier` | string | Key modifier / index (0x-prefixed) |
+| `publickey` | string | Public key (0x-prefixed) |
+
+> **AGENT WARNING:** Minima uses Winternitz one-time signatures — keys have limited uses. When `uses` approaches `maxuses`, the key is nearly exhausted. Monitor key usage and generate new addresses as needed.
+
+---
+
+## newaddress
+
+Generate a new receiving address.
+
+```json
+{ "status": true, "response": {
+  "script": "RETURN SIGNEDBY(0xB6EA...)",
+  "address": "0x9B69034E7434756DE940EAFB440858EAB977E4E7C7C7ADBEFB2372CFE18D8224",
+  "miniaddress": "MxG084RD41KST1KEYMUWG7AVD20GM7AN5RU9PU7ZUMRTUP3EB7U33C24WV47CF9",
+  "simple": true,
+  "default": false,
+  "publickey": "0xB6EA9AC075A88AD5C904B785EB03A20591DC05A0C5893AAB453F22EDC638CF30",
+  "track": true,
+  "total": 66
+}}
+```
+
+| Field | Type | Meaning |
+|-------|------|---------|
+| `script` | string | Script for this address |
+| `address` | string | Hex address (0x-prefixed) |
+| `miniaddress` | string | Human-readable MxG-prefixed address |
+| `simple` | boolean | Whether this is a simple SIGNEDBY address |
+| `default` | boolean | Always `false` for newly created addresses |
+| `publickey` | string | Associated public key |
+| `track` | boolean | Whether this address is tracked for balance |
+| `total` | **integer** | Total number of addresses after creation |
+
+---
+
+## scripts
+
+List all tracked scripts (addresses) on this node.
+
+```json
+{ "status": true, "response": [{
+  "script": "RETURN SIGNEDBY(0x9D5CB999...)",
+  "address": "0x530237C1210EC527...",
+  "miniaddress": "MxG082J08RS288EZ...",
+  "simple": true,
+  "default": true,
+  "publickey": "0x9D5CB999DDC594C5...",
+  "track": true
+}]}
+```
+
+| Field | Type | Meaning |
+|-------|------|---------|
+| `script` | string | KISSVM script |
+| `address` | string | Script address (0x-prefixed) |
+| `miniaddress` | string | MxG-prefixed address |
+| `simple` | boolean | Whether single-sig script |
+| `default` | boolean | Whether default address |
+| `publickey` | string | Associated public key |
+| `track` | boolean | Whether balance is tracked |
+
+---
+
+## history
+
+Transaction history. Returns full TxPoW details.
+
+```json
+{ "status": true, "response": {
+  "relevant": true,
+  "size": 12,
+  "txpows": [{
+    "txpowid": "0x000016FAF5A9DB30...",
+    "isblock": false,
+    "istransaction": true,
+    "superblock": -1,
+    "size": 5437,
+    "burn": 0,
+    "header": {
+      "block": "1939656",
+      "timemilli": "1770223384435",
+      "date": "Wed Feb 04 16:43:04 GMT 2026"
+    },
+    "body": {
+      "txn": {
+        "inputs": [{ "coinid": "0x...", "amount": "2", "address": "0x...", "tokenid": "0x00" }],
+        "outputs": [{ "coinid": "0x...", "amount": "1", "address": "0x...", "tokenid": "0x00" }],
+        "transactionid": "0x8446..."
+      }
+    }
+  }]
+}}
+```
+
+| Field | Type | Meaning |
+|-------|------|---------|
+| `relevant` | boolean | Whether results are filtered to relevant transactions |
+| `size` | **integer** | Number of transactions returned |
+| `txpows` | array | List of TxPoW objects (same structure as send response) |
+| `txpows[].txpowid` | string | Transaction ID for explorer links |
+| `txpows[].superblock` | **integer** | Superblock level (-1 if not) |
+| `txpows[].size` | **integer** | TxPoW size in bytes |
+| `txpows[].burn` | **integer** | Burn amount |
+
+> **AGENT WARNING:**
+> - `txpowid` is for explorer links, `transactionid` is internal — don't confuse them.
+> - Can return large responses — use `max:` parameter to limit results.
+> - Each TxPoW has the same full structure as the `send` response.
+
+---
+
+## mds
+
+MiniDapp System (MDS) status and installed MiniDapps.
+
+```json
+{ "status": true, "response": {
+  "enabled": true,
+  "connect": "https://172.31.116.66:9003",
+  "password": "YDFSTncO0D8g7xFj...",
+  "minidapps": [{
+    "uid": "0x9B6920DC...",
+    "conf": {
+      "name": "Pending",
+      "icon": "icon.png",
+      "version": "1.2.0",
+      "description": "Approve and deny pending MiniDapp actions",
+      "browser": "internal",
+      "permission": "write"
+    },
+    "sessionid": "0x9AA36D..."
+  }]
+}}
+```
+
+| Field | Type | Meaning |
+|-------|------|---------|
+| `enabled` | boolean | Whether MDS is enabled |
+| `connect` | string | MDS connection URL (https://IP:PORT) |
+| `password` | string | MDS access password |
+| `minidapps` | array | List of installed MiniDapps |
+| `minidapps[].uid` | string | MiniDapp unique identifier |
+| `minidapps[].conf.name` | string | MiniDapp display name |
+| `minidapps[].conf.version` | string | MiniDapp version |
+| `minidapps[].conf.permission` | string | `"read"` or `"write"` |
+
+> **AGENT WARNING:** MDS password is sensitive — do not log or display unnecessarily. `permission: "write"` allows state modification.
+
+---
+
+## burn
+
+View burn metrics across recent blocks.
+
+```json
+{ "status": true, "response": {
+  "1block": { "txns": 2, "max": 0, "med": 0, "avg": 0, "min": 0 },
+  "10block": { "txns": 7, "max": 0, "med": 0, "avg": 0, "min": 0 },
+  "50block": { "txns": 14, "max": 0, "med": 0, "avg": 0, "min": 0 }
+}}
+```
+
+| Field | Type | Meaning |
+|-------|------|---------|
+| `txns` | **integer** | Number of transactions in window |
+| `max` | **integer** | Maximum burn |
+| `med` | **integer** | Median burn |
+| `avg` | **integer** | Average burn |
+| `min` | **integer** | Minimum burn |
+
+> All burn stat values are **integers**. Use `50block` stats for a representative view of network activity.
+
+---
+
+## maxsign
+
+Sign data with your Maxima RSA identity key.
+
+**Parameters:** `data:0xCD34 (privatekey:0x...)`
+
+```json
+{ "status": true, "response": {
+  "signature": "0x8B795EF56B254B2B04C0B0C5233D5DBCF8AC885A419C650EFC21625B5FF9B521..."
+}}
+```
+
+| Field | Type | Meaning |
+|-------|------|---------|
+| `signature` | string | RSA signature (0x-prefixed hex) |
+
+---
+
+## maxverify
+
+Verify an RSA signature against a public key.
+
+**Parameters:** `data:0x... publickey:0x... signature:0x...`
+
+### Success:
+```json
+{ "status": true, "response": { "valid": true } }
+```
+
+### Failure:
+```json
+{ "status": false, "error": "java.security.SignatureException: Signature length not correct..." }
+```
+
+> **AGENT WARNING:** When verification fails, `status` is `false` and `error` contains the reason. The `publickey` must be the full RSA DER-encoded key, not just a hash.
+
+---
+
+## tokencreate
+
+Create a new custom token or NFT. Returns full TxPoW on success.
+
+**Parameters:** `name:MyToken amount:1000000 (decimals:8) (script:"RETURN TRUE")`
+
+Response structure is identical to `send` — a full TxPoW object with `txpowid`, `header`, `body`, etc.
+
+| Parameter | Required | Meaning |
+|-----------|----------|---------|
+| `name` | yes | Token name (string or JSON object with name/url/description/ticker) |
+| `amount` | yes | Total supply |
+| `decimals` | no | Decimal places (0-16). **0 = NFT**. Default: 8 |
+| `script` | no | Token script (default: `RETURN TRUE`) |
+
+> **AGENT WARNING:**
+> - Token creation is a **transaction** — requires Minima balance.
+> - Set `decimals:0` to create an NFT (non-fungible, indivisible).
+> - The created token's `tokenid` appears in the output coins.
+> - Requires user confirmation before executing.
+
+---
+
+## consolidate
+
+Consolidate many small coins (UTXOs) into fewer larger coins.
+
+**Parameters:** `tokenid:0x00 (burn:N)`
+
+Response structure is identical to `send` — a full TxPoW object.
+
+> **AGENT WARNING:**
+> - Consolidation is a **transaction** — it sends coins to yourself.
+> - Useful when you have many small UTXOs from mining or split operations.
+> - Reduces the `coins` count shown in the balance response.
+> - Requires user confirmation before executing.

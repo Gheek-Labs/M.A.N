@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "block",
+  "description": "Returns current top block info.",
+  "type": "object",
+  "properties": {
+    "status": { "type": "boolean" },
+    "response": {
+      "type": "object",
+      "properties": {
+        "block": { "type": "string", "description": "Block number (STRING in this response, unlike status.chain.block which is int)" },
+        "hash": { "type": "string", "description": "Block hash, 0x-prefixed" },
+        "timemilli": { "type": "string", "description": "Unix timestamp in milliseconds (string)" },
+        "date": { "type": "string", "description": "Human-readable date string" }
+      },
+      "required": ["block", "hash", "timemilli", "date"]
+    }
+  },
+  "required": ["status", "response"],
+  "x-agent-warnings": [
+    "block is a STRING here, unlike status.chain.block which is an integer",
+    "timemilli is a STRING, not an integer"
+  ]
+}

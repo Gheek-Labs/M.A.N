@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "newaddress",
+  "description": "Generate a new receiving address. Same structure as getaddress but with default:false and a total count.",
+  "type": "object",
+  "properties": {
+    "status": { "type": "boolean" },
+    "response": {
+      "type": "object",
+      "properties": {
+        "script": { "type": "string", "description": "Script associated with this address" },
+        "address": { "type": "string", "description": "Hex address (0x-prefixed)" },
+        "miniaddress": { "type": "string", "description": "Human-readable MxG-prefixed address" },
+        "simple": { "type": "boolean", "description": "Whether this is a simple SIGNEDBY address" },
+        "default": { "type": "boolean", "description": "Always false for newly created addresses" },
+        "publickey": { "type": "string", "description": "Associated public key (0x-prefixed)" },
+        "track": { "type": "boolean", "description": "Whether this address is tracked for balance" },
+        "total": { "type": "integer", "description": "Total number of addresses after creation (INTEGER)" }
+      },
+      "required": ["script", "address", "miniaddress", "simple", "default", "publickey", "track"]
+    }
+  },
+  "required": ["status", "response"],
+  "x-agent-warnings": [
+    "Each new address uses a key slot — Minima has finite key uses (Winternitz signatures)",
+    "total field shows how many addresses now exist (INTEGER)"
+  ]
+}

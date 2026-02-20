@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "scripts",
+  "description": "List all tracked scripts (addresses) on this node.",
+  "type": "object",
+  "properties": {
+    "status": { "type": "boolean" },
+    "response": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "script": { "type": "string", "description": "KISSVM script (e.g., 'RETURN SIGNEDBY(0x...)')" },
+          "address": { "type": "string", "description": "Script address (0x-prefixed hex)" },
+          "miniaddress": { "type": "string", "description": "Human-readable MxG-prefixed address" },
+          "simple": { "type": "boolean", "description": "Whether this is a simple single-sig script" },
+          "default": { "type": "boolean", "description": "Whether this is the default address" },
+          "publickey": { "type": "string", "description": "Associated public key (0x-prefixed)" },
+          "track": { "type": "boolean", "description": "Whether balance is tracked for this script" }
+        },
+        "required": ["script", "address", "simple", "track"]
+      }
+    }
+  },
+  "required": ["status", "response"]
+}

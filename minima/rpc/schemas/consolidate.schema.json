@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "consolidate",
+  "description": "Consolidate many small coins (UTXOs) into fewer larger coins. Reduces UTXO count.",
+  "type": "object",
+  "properties": {
+    "status": { "type": "boolean" },
+    "response": {
+      "type": "object",
+      "description": "Full TxPoW object (same structure as send response)",
+      "properties": {
+        "txpowid": { "type": "string", "description": "Transaction ID (0x-prefixed)" },
+        "isblock": { "type": "boolean" },
+        "istransaction": { "type": "boolean" },
+        "size": { "type": "integer" },
+        "header": {
+          "type": "object",
+          "properties": {
+            "block": { "type": "string" },
+            "timemilli": { "type": "string" },
+            "date": { "type": "string" }
+          }
+        },
+        "body": {
+          "type": "object",
+          "properties": {
+            "txn": {
+              "type": "object",
+              "properties": {
+                "inputs": { "type": "array", "description": "Multiple small coins consumed" },
+                "outputs": { "type": "array", "description": "Fewer larger coins created" },
+                "transactionid": { "type": "string" }
+              }
+            }
+          }
+        }
+      },
+      "required": ["txpowid"]
+    }
+  },
+  "required": ["status"],
+  "x-parameters": {
+    "tokenid": "Token to consolidate. Use 0x00 for native Minima. REQUIRED.",
+    "burn": "Burn amount to attach (optional)"
+  },
+  "x-agent-warnings": [
+    "Consolidation is a TRANSACTION — it sends coins to yourself",
+    "Useful when you have many small UTXOs from mining or split operations",
+    "Reduces the coins count shown in balance response",
+    "Requires user confirmation before executing"
+  ]
+}

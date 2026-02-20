@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "backup",
+  "description": "Create a backup of the node. Optionally encrypt with a password.",
+  "type": "object",
+  "properties": {
+    "status": { "type": "boolean" },
+    "response": {
+      "type": "object",
+      "properties": {
+        "backup": {
+          "type": "object",
+          "properties": {
+            "file": { "type": "string", "description": "Full path to the backup file" },
+            "size": { "type": "string", "description": "Backup file size (human-readable, e.g., '2.1MB')" }
+          },
+          "required": ["file"]
+        }
+      },
+      "required": ["backup"]
+    }
+  },
+  "required": ["status", "response"],
+  "x-parameters": {
+    "password": "Encryption password for the backup. STRONGLY recommended.",
+    "file": "Custom backup file path (optional)"
+  },
+  "x-agent-warnings": [
+    "Backups contain private keys — ALWAYS encrypt with a password",
+    "Never transmit or log unencrypted backups",
+    "Requires user confirmation before executing"
+  ]
+}

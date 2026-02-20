@@ -1,0 +1,102 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "history",
+  "description": "Transaction history for this node. Returns full TxPoW details for each transaction.",
+  "type": "object",
+  "properties": {
+    "status": { "type": "boolean" },
+    "response": {
+      "type": "object",
+      "properties": {
+        "relevant": { "type": "boolean", "description": "Whether results are filtered to relevant transactions" },
+        "size": { "type": "integer", "description": "Number of transactions returned (INTEGER)" },
+        "details": { "type": "string", "description": "Additional details (may describe filter applied)" },
+        "txpows": {
+          "type": "array",
+          "description": "List of TxPoW transaction objects",
+          "items": {
+            "type": "object",
+            "properties": {
+              "txpowid": { "type": "string", "description": "Transaction ID (0x-prefixed). Use for explorer links." },
+              "isblock": { "type": "boolean", "description": "Whether this TxPoW is a block" },
+              "istransaction": { "type": "boolean", "description": "Whether this TxPoW contains a transaction" },
+              "superblock": { "type": "integer", "description": "Superblock level (-1 if not a superblock)" },
+              "size": { "type": "integer", "description": "TxPoW size in bytes (INTEGER)" },
+              "burn": { "type": "integer", "description": "Burn amount (INTEGER, usually 0)" },
+              "header": {
+                "type": "object",
+                "properties": {
+                  "chainid": { "type": "string" },
+                  "block": { "type": "string", "description": "Block height (STRING in history)" },
+                  "timemilli": { "type": "string", "description": "Unix timestamp in millis (STRING)" },
+                  "date": { "type": "string", "description": "Human-readable date" }
+                }
+              },
+              "hasbody": { "type": "boolean" },
+              "body": {
+                "type": "object",
+                "properties": {
+                  "txn": {
+                    "type": "object",
+                    "properties": {
+                      "inputs": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "coinid": { "type": "string" },
+                            "amount": { "type": "string" },
+                            "address": { "type": "string" },
+                            "miniaddress": { "type": "string" },
+                            "tokenid": { "type": "string" },
+                            "token": { "type": ["null", "object"] },
+                            "spent": { "type": "boolean" },
+                            "created": { "type": "string" }
+                          }
+                        }
+                      },
+                      "outputs": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "coinid": { "type": "string" },
+                            "amount": { "type": "string" },
+                            "address": { "type": "string" },
+                            "miniaddress": { "type": "string" },
+                            "tokenid": { "type": "string" },
+                            "token": { "type": ["null", "object"] },
+                            "spent": { "type": "boolean" },
+                            "created": { "type": "string" }
+                          }
+                        }
+                      },
+                      "state": { "type": "array" },
+                      "linkhash": { "type": "string" },
+                      "transactionid": { "type": "string", "description": "Internal tx hash — NOT the same as txpowid" }
+                    }
+                  }
+                }
+              }
+            },
+            "required": ["txpowid", "isblock", "istransaction"]
+          }
+        }
+      },
+      "required": ["relevant", "txpows"]
+    }
+  },
+  "required": ["status", "response"],
+  "x-agent-warnings": [
+    "txpowid is the external transaction ID — use for explorer links: https://explorer.minima.global/transactions/<txpowid>",
+    "transactionid is the internal hash — do NOT use for explorer links",
+    "amount fields in inputs/outputs are STRINGS",
+    "Can return large responses — use max: parameter to limit results",
+    "superblock, size, burn are INTEGERS; block, timemilli are STRINGS"
+  ],
+  "x-parameters": {
+    "max": "Maximum number of results to return",
+    "offset": "Offset for pagination",
+    "relevant": "true/false — filter to relevant transactions (default: true)"
+  }
+}

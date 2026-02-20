@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "burn",
+  "description": "View burn metrics across recent blocks. Shows transaction fee/burn statistics.",
+  "type": "object",
+  "properties": {
+    "status": { "type": "boolean" },
+    "response": {
+      "type": "object",
+      "properties": {
+        "1block": {
+          "type": "object",
+          "description": "Burn stats for the last 1 block",
+          "properties": {
+            "txns": { "type": "integer", "description": "Number of transactions (INTEGER)" },
+            "max": { "type": "integer", "description": "Maximum burn in this window (INTEGER)" },
+            "med": { "type": "integer", "description": "Median burn (INTEGER)" },
+            "avg": { "type": "integer", "description": "Average burn (INTEGER)" },
+            "min": { "type": "integer", "description": "Minimum burn (INTEGER)" }
+          },
+          "required": ["txns", "max", "med", "avg", "min"]
+        },
+        "10block": {
+          "type": "object",
+          "description": "Burn stats for the last 10 blocks",
+          "properties": {
+            "txns": { "type": "integer" },
+            "max": { "type": "integer" },
+            "med": { "type": "integer" },
+            "avg": { "type": "integer" },
+            "min": { "type": "integer" }
+          },
+          "required": ["txns", "max", "med", "avg", "min"]
+        },
+        "50block": {
+          "type": "object",
+          "description": "Burn stats for the last 50 blocks",
+          "properties": {
+            "txns": { "type": "integer" },
+            "max": { "type": "integer" },
+            "med": { "type": "integer" },
+            "avg": { "type": "integer" },
+            "min": { "type": "integer" }
+          },
+          "required": ["txns", "max", "med", "avg", "min"]
+        }
+      },
+      "required": ["1block", "10block", "50block"]
+    }
+  },
+  "required": ["status", "response"],
+  "x-agent-warnings": [
+    "All burn stat values (txns, max, med, avg, min) are INTEGERS",
+    "Burn values of 0 mean no transaction fees were burned in that window",
+    "Use 50block stats for a more representative view of network burn rates"
+  ]
+}

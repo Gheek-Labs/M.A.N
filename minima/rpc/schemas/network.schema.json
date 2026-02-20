@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "network",
+  "description": "Returns network connection details including active peer connections and P2P info.",
+  "type": "object",
+  "properties": {
+    "status": { "type": "boolean" },
+    "response": {
+      "type": "object",
+      "properties": {
+        "connections": {
+          "type": "array",
+          "description": "List of active peer connections",
+          "items": {
+            "type": "object",
+            "properties": {
+              "welcome": { "type": "string", "description": "Peer's version string" },
+              "uid": { "type": "string", "description": "Connection unique ID" },
+              "incoming": { "type": "boolean", "description": "Whether this is an incoming connection" },
+              "host": { "type": "string", "description": "Peer IP address" },
+              "port": { "type": "integer", "description": "Peer port (INTEGER)" },
+              "minimaport": { "type": "integer", "description": "Peer's Minima port (INTEGER)" },
+              "isconnected": { "type": "boolean", "description": "Connection active status" },
+              "valid": { "type": "boolean", "description": "Whether connection is valid" },
+              "connected": { "type": "string", "description": "Date string when connected" }
+            }
+          }
+        },
+        "details": {
+          "type": "object",
+          "description": "Node network details",
+          "properties": {
+            "host": { "type": "string", "description": "This node's IP address" },
+            "hostset": { "type": "boolean", "description": "Whether host was manually set" },
+            "port": { "type": "integer", "description": "P2P port (INTEGER)" },
+            "connecting": { "type": "integer", "description": "Number of in-progress connections" },
+            "connected": { "type": "integer", "description": "Number of active connections (INTEGER)" },
+            "rpc": {
+              "type": "object",
+              "properties": {
+                "enabled": { "type": "boolean" },
+                "port": { "type": "integer" }
+              }
+            },
+            "p2p": {
+              "type": "object",
+              "properties": {
+                "address": { "type": "string", "description": "Public P2P address (IP:port)" },
+                "isAcceptingInLinks": { "type": "boolean" },
+                "numInLinks": { "type": "integer" },
+                "numOutLinks": { "type": "integer" },
+                "numNotAcceptingConnP2PLinks": { "type": "integer" },
+                "numNoneP2PLinks": { "type": "integer" },
+                "numKnownPeers": { "type": "integer" }
+              }
+            }
+          }
+        }
+      },
+      "required": ["connections", "details"]
+    }
+  },
+  "required": ["status", "response"]
+}

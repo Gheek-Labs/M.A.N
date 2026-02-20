@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "maxverify",
+  "description": "Verify an RSA signature against a public key.",
+  "type": "object",
+  "properties": {
+    "status": { "type": "boolean" },
+    "response": {
+      "type": "object",
+      "description": "Present when verification succeeds (status:true). When status:false, check error field.",
+      "properties": {
+        "valid": { "type": "boolean", "description": "Whether signature is valid" }
+      }
+    },
+    "error": { "type": "string", "description": "Error message when status is false (e.g., invalid signature length)" }
+  },
+  "required": ["status"],
+  "x-parameters": {
+    "data": "Original data that was signed (0x-prefixed hex). REQUIRED.",
+    "publickey": "Signer's RSA public key (0x-prefixed). REQUIRED.",
+    "signature": "Signature to verify (0x-prefixed hex). REQUIRED."
+  },
+  "x-agent-warnings": [
+    "When verification fails, status is false and error contains the reason",
+    "The publickey must be the full RSA DER-encoded key, not just a hash"
+  ]
+}

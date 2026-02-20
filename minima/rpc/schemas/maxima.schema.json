@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "maxima action:info",
+  "description": "Returns your Maxima identity, contact address, and MLS configuration.",
+  "type": "object",
+  "properties": {
+    "status": { "type": "boolean" },
+    "response": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Display name (set with maxima action:setname)" },
+        "icon": { "type": "string", "description": "Icon data (0x-prefixed hex)" },
+        "publickey": { "type": "string", "description": "RSA public key (0x-prefixed, DER-encoded)" },
+        "mxpublickey": { "type": "string", "description": "Mx-formatted public key" },
+        "staticmls": { "type": "boolean", "description": "Whether static MLS is configured" },
+        "mls": { "type": "string", "description": "Current MLS host address (Mx...@IP:PORT)" },
+        "localidentity": { "type": "string", "description": "Local network identity (Mx...@localIP:PORT). Only reachable on local network." },
+        "p2pidentity": { "type": "string", "description": "Public network identity (Mx...@publicIP:PORT). Use for external contacts." },
+        "contact": { "type": "string", "description": "Full contact address for sharing with others (Mx...@IP:PORT)" },
+        "logs": { "type": "boolean", "description": "Whether Maxima logging is enabled" },
+        "poll": { "type": "integer", "description": "Poll count (INTEGER)" }
+      },
+      "required": ["name", "publickey", "staticmls", "localidentity", "p2pidentity", "contact", "logs", "poll"]
+    }
+  },
+  "required": ["status", "response"],
+  "x-agent-warnings": [
+    "Use p2pidentity for external/public contacts, NOT localidentity",
+    "localidentity is only reachable on the local network",
+    "contact is the shareable address for adding you as a contact",
+    "poll is an INTEGER, not a string"
+  ]
+}

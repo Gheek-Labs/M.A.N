@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "tokencreate",
+  "description": "Create a new custom token or NFT. Returns the resulting TxPoW.",
+  "type": "object",
+  "properties": {
+    "status": { "type": "boolean" },
+    "response": {
+      "type": "object",
+      "description": "Full TxPoW object (same structure as send response)",
+      "properties": {
+        "txpowid": { "type": "string", "description": "Transaction ID for the token creation (0x-prefixed)" },
+        "isblock": { "type": "boolean" },
+        "istransaction": { "type": "boolean" },
+        "size": { "type": "integer" },
+        "burn": { "type": "integer" },
+        "header": {
+          "type": "object",
+          "properties": {
+            "block": { "type": "string" },
+            "timemilli": { "type": "string" },
+            "date": { "type": "string" }
+          }
+        },
+        "body": {
+          "type": "object",
+          "properties": {
+            "txn": {
+              "type": "object",
+              "properties": {
+                "inputs": { "type": "array" },
+                "outputs": { "type": "array" },
+                "transactionid": { "type": "string" }
+              }
+            }
+          }
+        }
+      },
+      "required": ["txpowid"]
+    }
+  },
+  "required": ["status"],
+  "x-parameters": {
+    "name": "Token name (string or JSON object with name/url/description/ticker). REQUIRED.",
+    "amount": "Total supply amount. REQUIRED.",
+    "decimals": "Decimal places (0-16). 0 = NFT. Default: 8.",
+    "script": "Custom token script (default: RETURN TRUE)",
+    "burn": "Burn amount to attach"
+  },
+  "x-agent-warnings": [
+    "Token creation is a TRANSACTION — requires Minima balance to pay for it",
+    "Set decimals:0 to create an NFT (non-fungible, indivisible token)",
+    "name can be a JSON object: {\"name\":\"MyToken\",\"url\":\"...\",\"description\":\"...\",\"ticker\":\"TKR\"}",
+    "The created token's tokenid will appear in the outputs of the response",
+    "Requires user confirmation before executing"
+  ]
+}

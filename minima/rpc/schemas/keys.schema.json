@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "keys",
+  "description": "Lists wallet signing keys with usage stats.",
+  "type": "object",
+  "properties": {
+    "status": { "type": "boolean" },
+    "response": {
+      "type": "object",
+      "properties": {
+        "keys": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "size": { "type": "integer", "description": "Key size in bytes (INTEGER)" },
+              "depth": { "type": "integer", "description": "Winternitz depth (INTEGER)" },
+              "uses": { "type": "integer", "description": "Number of times this key has been used (INTEGER)" },
+              "maxuses": { "type": "integer", "description": "Maximum allowed uses before key is exhausted (INTEGER)" },
+              "modifier": { "type": "string", "description": "Key modifier / index (0x-prefixed)" },
+              "publickey": { "type": "string", "description": "Public key (0x-prefixed)" }
+            },
+            "required": ["size", "depth", "uses", "maxuses", "modifier", "publickey"]
+          }
+        }
+      },
+      "required": ["keys"]
+    }
+  },
+  "required": ["status", "response"],
+  "x-agent-warnings": [
+    "size, depth, uses, maxuses are all INTEGERS",
+    "When uses approaches maxuses, the key is nearly exhausted — generate new keys",
+    "Minima uses Winternitz one-time signatures — keys have limited uses"
+  ]
+}

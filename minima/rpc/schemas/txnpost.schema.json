@@ -1,99 +1,61 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "txnpost / send",
-  "description": "Response from posting a transaction (send or txnpost). Contains the full TxPoW object.",
+  "title": "txnpost",
+  "description": "Post a manually built transaction. Returns the full TxPoW. Same response structure as send.",
   "type": "object",
   "properties": {
     "status": { "type": "boolean" },
     "response": {
       "type": "object",
+      "description": "Full TxPoW object — same structure as send response. See send.schema.json for complete field reference.",
       "properties": {
-        "txpowid": {
-          "type": "string",
-          "description": "Transaction ID (0x-prefixed). Use for explorer link: https://explorer.minima.global/transactions/<txpowid>"
-        },
-        "isblock": {
-          "type": "boolean",
-          "description": "Whether this TxPoW is a block"
-        },
-        "istransaction": {
-          "type": "boolean",
-          "description": "Whether this TxPoW contains a transaction"
-        },
-        "size": {
-          "type": "integer",
-          "description": "Size of TxPoW in bytes"
-        },
-        "burn": {
-          "type": "number",
-          "description": "Burn amount (usually 0)"
-        },
+        "txpowid": { "type": "string", "description": "Transaction ID (0x-prefixed)" },
+        "isblock": { "type": "boolean" },
+        "istransaction": { "type": "boolean" },
+        "superblock": { "type": "integer", "description": "-1 if not a superblock (INTEGER)" },
+        "size": { "type": "integer", "description": "TxPoW size in bytes (INTEGER)" },
+        "burn": { "type": "integer", "description": "Burn amount (INTEGER)" },
         "header": {
           "type": "object",
           "properties": {
-            "block": {
-              "type": "string",
-              "description": "Block number at time of transaction (STRING)"
-            },
-            "timemilli": {
-              "type": "string",
-              "description": "Unix timestamp in milliseconds (STRING)"
-            },
-            "date": {
-              "type": "string",
-              "description": "Human-readable date"
-            }
+            "block": { "type": "string" },
+            "timemilli": { "type": "string" },
+            "date": { "type": "string" }
           }
         },
+        "hasbody": { "type": "boolean" },
         "body": {
           "type": "object",
           "properties": {
             "txn": {
               "type": "object",
               "properties": {
-                "inputs": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "coinid": { "type": "string" },
-                      "amount": { "type": "string", "description": "Amount (STRING)" },
-                      "address": { "type": "string", "description": "0x-prefixed hex address" },
-                      "miniaddress": { "type": "string", "description": "MxG-prefixed human address" },
-                      "tokenid": { "type": "string" }
-                    }
-                  }
-                },
-                "outputs": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "coinid": { "type": "string" },
-                      "amount": { "type": "string", "description": "Amount (STRING)" },
-                      "address": { "type": "string" },
-                      "miniaddress": { "type": "string" },
-                      "tokenid": { "type": "string" }
-                    }
-                  }
-                },
-                "transactionid": {
-                  "type": "string",
-                  "description": "Internal transaction hash (different from txpowid)"
-                }
+                "inputs": { "type": "array" },
+                "outputs": { "type": "array" },
+                "state": { "type": "array" },
+                "transactionid": { "type": "string", "description": "Internal tx hash — NOT the same as txpowid" }
               }
-            }
+            },
+            "witness": { "type": "object" },
+            "burntxn": { "type": "object" },
+            "txnlist": { "type": "array" }
           }
         }
       },
       "required": ["txpowid"]
-    }
+    },
+    "error": { "type": "string" }
   },
-  "required": ["status", "response"],
+  "required": ["status"],
+  "x-parameters": {
+    "id": "Transaction ID (from txncreate). REQUIRED.",
+    "auto": "true — auto-sign and select inputs (optional)",
+    "burn": "Burn amount to attach (optional)"
+  },
   "x-agent-warnings": [
-    "txpowid is the primary transaction identifier for explorer links",
-    "amount fields in inputs/outputs are STRINGS, not numbers",
-    "header.block and header.timemilli are STRINGS",
-    "transactionid != txpowid — use txpowid for external references"
+    "See send.schema.json for the full TxPoW response structure",
+    "txpowid is the external ID for explorer links",
+    "transactionid is internal — do NOT use for explorer",
+    "superblock, size, burn are INTEGERS; block, timemilli are STRINGS"
   ]
 }

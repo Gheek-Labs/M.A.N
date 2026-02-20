@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "maxcontacts action:list",
+  "description": "Lists all Maxima contacts. Each contact consumes Tx-PoW; limit to ~20.",
+  "type": "object",
+  "properties": {
+    "status": { "type": "boolean" },
+    "response": {
+      "type": "object",
+      "properties": {
+        "allowallcontacts": { "type": "boolean", "description": "Whether new contacts are auto-accepted" },
+        "contacts": {
+          "type": "array",
+          "description": "List of contacts",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "integer", "description": "Contact ID (INTEGER). Use for send-by-ID." },
+              "publickey": { "type": "string", "description": "Contact's Maxima RSA public key" },
+              "currentaddress": { "type": "string", "description": "Contact's current reachable address (Mx...@IP:PORT)" },
+              "myaddress": { "type": "string", "description": "Your address as seen by this contact" },
+              "lastseen": { "type": "string", "description": "Unix timestamp in millis (STRING, not integer)" },
+              "date": { "type": "string", "description": "Human-readable last seen date" },
+              "extradata": {
+                "type": "object",
+                "description": "Contact metadata",
+                "properties": {
+                  "name": { "type": "string", "description": "Contact's display name" },
+                  "minimaaddress": { "type": "string", "description": "Contact's Minima wallet address (MxG format)" },
+                  "topblock": { "type": "string", "description": "Contact's current top block" },
+                  "checkblock": { "type": "string", "description": "Verified block for chain check" },
+                  "checkhash": { "type": "string", "description": "Hash of checkblock" }
+                }
+              },
+              "samechain": { "type": "boolean", "description": "Whether contact is on the same chain" }
+            },
+            "required": ["id", "publickey", "currentaddress", "lastseen"]
+          }
+        }
+      },
+      "required": ["allowallcontacts", "contacts"]
+    }
+  },
+  "required": ["status", "response"],
+  "x-agent-warnings": [
+    "Each contact consumes Tx-PoW — limit to ~20 contacts",
+    "lastseen is a STRING (millis), not an integer",
+    "id is an INTEGER — use for maxima action:send id:<N>",
+    "Use poll:true when sending for automatic retry on offline contacts"
+  ]
+}

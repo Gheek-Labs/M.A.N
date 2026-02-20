@@ -169,6 +169,7 @@ See `minima/RESPONSE_SCHEMAS.md` for complete field semantics, types, and agent 
 Machine-readable schemas in `minima/rpc/schemas/*.schema.json`.
 
 ## Recent Changes
+- 2026-02-20: Phase 6: Full schema coverage — 25 RPC command schemas. Updated send schema with live transaction response (superblock/cascadelevels int, nonce/magic strings, witness/burntxn/txnlist structure). Added schemas: keys, newaddress, scripts, history, mds, burn, tokencreate, consolidate, maxsign, maxverify. Updated RESPONSE_SCHEMAS.md with all 25 command sections. Updated maxcontacts to show allowallcontacts wrapper.
 - 2026-02-20: Phase 5: Live-validated schemas, SDKs, and templates against running node. Fixed: status (removed devices, corrected int/float types), hash (added data/type fields), random (added size/hashed/type/keycode), tokens (decimals/scale are int, name vs token field), maxima (added icon/mxpublickey/staticmls/poll). Added balance tokendetails:true + NFT detection (decimals:0). Added nfts() to both SDKs.
 - 2026-02-20: Phase 4: On-chain record recipe (ONCHAIN_RECORDS.md, record_data.sh, SDK recordOnChain helpers, hash schema warnings)
 - 2026-02-20: Added templates: node-web-dashboard, python-bot, ros2-bridge

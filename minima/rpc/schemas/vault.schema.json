@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "vault",
+  "description": "Seed phrase, lock status, and key management. DANGEROUS — exposes master key.",
+  "type": "object",
+  "properties": {
+    "status": { "type": "boolean" },
+    "response": {
+      "type": "object",
+      "properties": {
+        "phrase": { "type": "string", "description": "24-word BIP39 seed phrase. NEVER log, display, or transmit." },
+        "seed": { "type": "string", "description": "Seed as hex (0x-prefixed). NEVER log or transmit." },
+        "locked": { "type": "boolean", "description": "Whether wallet keys are password-locked" }
+      },
+      "required": ["phrase", "seed", "locked"]
+    }
+  },
+  "required": ["status", "response"],
+  "x-parameters": {
+    "action": "seed | wipekeys | restorekeys | passwordlock | passwordunlock",
+    "seed": "Seed phrase for restorekeys",
+    "phrase": "Seed phrase for restorekeys",
+    "password": "Password for passwordlock/passwordunlock"
+  },
+  "x-agent-warnings": [
+    "CRITICAL: This command exposes the seed phrase — the MASTER KEY for all funds",
+    "NEVER log, display in UI, or transmit the seed phrase or seed hex",
+    "If the seed is lost, funds are UNRECOVERABLE",
+    "ALWAYS require explicit user confirmation before executing vault",
+    "wipekeys and restorekeys are DESTRUCTIVE operations — require double confirmation"
+  ]
+}

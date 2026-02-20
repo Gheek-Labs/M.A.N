@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "maxsign",
+  "description": "Sign data with your Maxima RSA identity key. Can also use custom keys.",
+  "type": "object",
+  "properties": {
+    "status": { "type": "boolean" },
+    "response": {
+      "type": "object",
+      "properties": {
+        "signature": { "type": "string", "description": "RSA signature, 0x-prefixed hex" }
+      },
+      "required": ["signature"]
+    }
+  },
+  "required": ["status", "response"],
+  "x-parameters": {
+    "data": "Data to sign (0x-prefixed hex). REQUIRED.",
+    "privatekey": "Custom private key (0x-prefixed). Optional — defaults to Maxima identity key."
+  }
+}

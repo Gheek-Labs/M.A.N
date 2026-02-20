@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "random",
+  "description": "Generate cryptographic random data using Minima's internal RNG.",
+  "type": "object",
+  "properties": {
+    "status": { "type": "boolean" },
+    "response": {
+      "type": "object",
+      "properties": {
+        "size": { "type": "string", "description": "Byte size of random data (STRING)" },
+        "random": { "type": "string", "description": "Raw random value, 0x-prefixed" },
+        "hashed": { "type": "string", "description": "SHA3 hash of the random value, 0x-prefixed" },
+        "type": { "type": "string", "description": "Hash algorithm used (e.g., 'sha3')" },
+        "keycode": { "type": "string", "description": "Human-readable keycode form (e.g., 'ZRJ7-79RD-UG6Q-M6CH-1G2R')" }
+      },
+      "required": ["size", "random", "hashed", "type", "keycode"]
+    }
+  },
+  "required": ["status", "response"]
+}
