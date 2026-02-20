@@ -1,0 +1,10 @@
+{
+    "command": "sign",
+    "params": {
+        "data": "hello",
+        "publickey": "auto"
+    },
+    "status": false,
+    "pending": false,
+    "error": "Invalid Data param specified : data hello"
+}

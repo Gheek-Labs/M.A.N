@@ -1,0 +1,61 @@
+{
+    "command": "status",
+    "status": true,
+    "pending": false,
+    "response": {
+        "version": "1.0.46.8",
+        "uptime": "0 Years 0 Months 0 Weeks 0 Days 0 Hours 20 Minutes 12 Seconds",
+        "locked": false,
+        "length": 5328,
+        "weight": "815010928291270",
+        "minima": "999979665.55068805473389496137790014706585395910793557",
+        "coins": "1328161",
+        "data": "/home/runner/workspace/minima/data/1.0",
+        "memory": {
+            "ram": "405.8 MB",
+            "disk": "1.0 GB",
+            "files": {
+                "txpowdb": "157.4 MB",
+                "archivedb": "688.7 MB",
+                "cascade": "2.1 MB",
+                "chaintree": "6.7 MB",
+                "wallet": "376.0 KB",
+                "userdb": "4.6 KB",
+                "p2pdb": "1.7 KB"
+            }
+        },
+        "chain": {
+            "block": 1958640,
+            "time": "Fri Feb 20 10:59:14 GMT 2026",
+            "hash": "0x00000020243A9B0594EF3241CAE8412F7E422C209CF3507B47E939D773B31CC9",
+            "speed": 0.020941,
+            "difficulty": "0x00000050B884696EC77BC26E1AD22B7630B9692BB9CD2CD4F66BAF29D1D35AA2",
+            "size": 2072,
+            "length": 2070,
+            "branches": 2,
+            "weight": "107983317170",
+            "cascade": {
+                "start": 1956570,
+                "length": 3258,
+                "weight": "814902944974100"
+            }
+        },
+        "txpow": {
+            "mempool": 1,
+            "ramdb": 19055,
+            "txpowdb": 19051,
+            "archivedb": 100001
+        },
+        "network": {
+            "host": "172.31.116.66",
+            "hostset": false,
+            "port": 9001,
+            "connecting": 0,
+            "connected": 5,
+            "rpc": {
+                "enabled": true,
+                "port": 9005
+            }
+        }
+    }
+}

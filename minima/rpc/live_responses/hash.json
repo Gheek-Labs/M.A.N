@@ -1,0 +1,14 @@
+{
+    "command": "hash",
+    "params": {
+        "data": "hello"
+    },
+    "status": true,
+    "pending": false,
+    "response": {
+        "input": "hello",
+        "data": "0x68656C6C6F",
+        "type": "sha3",
+        "hash": "0x3338BE694F50C5F338814986CDF0686453A888B84F424D792AF4B9202398F392"
+    }
+}

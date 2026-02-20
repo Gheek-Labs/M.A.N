@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "hash",
-  "description": "Hash data using Minima's internal hash function (Keccak-256).",
+  "description": "Hash data using Minima's internal hash function (Keccak-256). LOCAL OPERATION ONLY — does not write to the blockchain, does not produce a txpowid. To create an on-chain record, use record_data.sh or the SDK recordOnChain() method instead.",
   "type": "object",
   "properties": {
     "status": { "type": "boolean" },
@@ -14,7 +14,7 @@
         },
         "hash": {
           "type": "string",
-          "description": "Keccak-256 hash result, 0x-prefixed hex string"
+          "description": "Keccak-256 hash result, 0x-prefixed hex string. This is a LOCAL computation — NOT an on-chain identifier. Cannot be looked up on the explorer."
         }
       },
       "required": ["input", "hash"]
@@ -22,7 +22,10 @@
   },
   "required": ["status", "response"],
   "x-agent-warnings": [
-    "Hash output is always 0x-prefixed hex",
+    "LOCAL OPERATION: hash does not write anything to the blockchain",
+    "The hash output is NOT a txpowid — it cannot be looked up on the explorer",
+    "To record data on-chain, use record_data.sh or SDK recordOnChain() instead",
+    "Explorer links use txpowid (from transactions), not hash output",
     "Input can be a string or 0x-prefixed hex data"
   ]
 }

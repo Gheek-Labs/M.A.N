@@ -1,0 +1,11 @@
+{
+    "command": "maxextra",
+    "params": {
+        "action": "mlsinfo"
+    },
+    "status": true,
+    "pending": false,
+    "response": {
+        "mlsservice": []
+    }
+}

@@ -1,0 +1,12 @@
+{
+    "command": "maxcontacts",
+    "params": {
+        "action": "list"
+    },
+    "status": true,
+    "pending": false,
+    "response": {
+        "allowallcontacts": false,
+        "contacts": []
+    }
+}

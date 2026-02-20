@@ -1,0 +1,11 @@
+{
+    "command": "webhooks",
+    "params": {
+        "action": "list"
+    },
+    "status": true,
+    "pending": false,
+    "response": {
+        "webhooks": []
+    }
+}

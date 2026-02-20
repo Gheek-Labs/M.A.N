@@ -1,0 +1,443 @@
+{
+    "command": "mds",
+    "params": {
+        "action": "list"
+    },
+    "status": true,
+    "pending": false,
+    "response": {
+        "enabled": true,
+        "connect": "https://172.31.116.66:9003",
+        "password": "YDFSTncO0D8g7xFjVtY5YBCU!Aa1",
+        "publicmds": false,
+        "publicmdsuid": "0x9F6069EF9977E91F00419BAA6C3E7B624CBF6797CC69E6617E784C9903CF3C322AE8E99273DC752F68F18D3D2485D4A963B4707A82A93CC8B5B10DA7C9D8375823C0206DA18761393E179F1BA393B57051D415E5F6EE1AE543CD8136C4040E26F7E825110D79825794D7F21127A9D8202479AA60F835611451FA0C1EE0296499",
+        "untrustedmdsuid": "0x317D8C93EEA27A9C366532794C9E5883D369ACABD825437EE2CC4284C77F168FB1A6F72F7BE53E394F7B6E529B99F5FE4762745546EAA9595CB9FB6B3FA2B3D00140021F0F7D3FD317B906CB7B2D1AFCC70E596B3B49B07E193BCB95B416C61D6075CADDBB01265A807929E5CAA67886BD92638ABF0DDC2527DEE5AB5CA4C780",
+        "minidapps": [
+            {
+                "uid": "0x9B6920DC9A58DE3BF562DC3630C7C1DA70FF57F379F87DF9BC86B5447CB58F9E",
+                "conf": {
+                    "name": "Pending",
+                    "icon": "icon.png",
+                    "version": "1.2.0",
+                    "description": "Approve and deny pending MiniDapp actions",
+                    "browser": "internal",
+                    "permission": "write"
+                },
+                "sessionid": "0x9AA36D0FFA4930A28B3DC2A9EC40AF7610A19BE436ED5828554D8FB8BF60B80B6D9F40EEE52141DBE88666FBE68ED41C7BCD2ACE2BA6C14EA3ADDEECBF58CE3FA5D9B5B8E2A4F3C45E1F4A9BF05B173DEFCC145345E7C4B819E1BF944C451E3E52F06E3141C410053BC539014C0D67D8551899AA737E757F1F010D066A7AB12F"
+            },
+            {
+                "uid": "0x76B9B162A20E1F0D4A44439D1DC90DD1CCA54350EF7BF5F9C4D78DB8355783C8",
+                "conf": {
+                    "name": "Security",
+                    "icon": "icon.png",
+                    "version": "1.14.3",
+                    "description": "secure your node",
+                    "browser": "internal",
+                    "permission": "write"
+                },
+                "sessionid": "0xC3DE4C6D47271CF6E1F07B81DBF810723DCD5A9190F35775A28C64F3B1F57AC4ED0E0CB1037A82A80B2659A15767995154AE8916CA92DB4387A06715238DFB796AA9833FCA930FB47E2653F2A3348563C8015C4E4458A661311FF9132B1CC19838DFD9ECB3B531F10F16738EF54EA517C7A56151BCDA183ECE034B57BFCC4ACE"
+            },
+            {
+                "uid": "0x1B90DAE1454196E7ABCD309360AF4DB9B3AE6726FA26E55792F453289324928E",
+                "conf": {
+                    "name": "Dapp Store",
+                    "icon": "icon.png",
+                    "version": "1.5.1",
+                    "description": "Minidapp store to download all your favourite apps!",
+                    "permission": "write",
+                    "browser": "internal"
+                },
+                "sessionid": "0x21E805642FA9D97B45E7202C2BF6B416128BBD581D150044E0CC7C6D28547CB03E7AD722FE5E2A69C8E5B529CC646FF9A5AA066175C2A0EC06105BCE105580853C8988AA367550BF94296B90308AD76A28C5297236FAD618927EFE4D345BC7FBD533D15DA3F320C8DB2DC25435AD601D17AC776C5EBC55BB4293234C22B7A68A"
+            },
+            {
+                "uid": "0xBDC288BC4B7216C3275569BE041952B220BE66AD33BC541E575073BD8D224705",
+                "conf": {
+                    "name": "Axe S3",
+                    "icon": "icon.png",
+                    "version": "1.0.0",
+                    "description": "Prove you own a digital Minima asset",
+                    "browser": "internal",
+                    "category": "Social",
+                    "permission": "read"
+                },
+                "sessionid": "0xDC3D6010D556BAD9A5C0CED0A08C1DF44491E2514C8D113C005FA2A716E85BFBDCFA2A71324D7CD6E1F31E5B17369F42F355FA1CF5B25BC344A9B5EAA73DBF93D25F66AF643A11DE50A82CD9BAE8DFD087D263E6A70CCD266D9B496907119DC0043C518E0270C935FD778826611AE211C4242A0F641A69C91331631319B11A95"
+            },
+            {
+                "uid": "0xD0B8493676830B6684FADAEE78AECDCA42107D1CDB7CD27C9AB67A08141FB927",
+                "conf": {
+                    "name": "Block",
+                    "icon": "icon.png",
+                    "version": "3.3.4",
+                    "description": "Explore the Minima blockchain",
+                    "browser": "internal",
+                    "category": "Utilities",
+                    "permission": "read"
+                },
+                "sessionid": "0xC6ED78E1974D628DB6C04DC20DD98930D2D4AB5F24380D8F091B521ACDDEEAEF14D3C11A83080D8D725DBB09C3DC0FAA09CECFC3593E7E7348257337841345CA7F5FB36A7CD787B901EC7F382862CEF2638A7358163F670FEF1FD3BA7DD2971764502087547D560F008FB67D982F1AFBD3B939E97679397C48D60245685845B8"
+            },
+            {
+                "uid": "0xAD3AFCD3A2335BB68F41A968AAB2427FD9184E81D87CA4FB24D56650A2DAFB50",
+                "conf": {
+                    "name": "ChainMail",
+                    "icon": "./images/chainmail.webp",
+                    "version": "1.13.0",
+                    "description": "Encrypted on-chain message system",
+                    "category": "Social",
+                    "permission": "read",
+                    "browser": "internal"
+                },
+                "sessionid": "0x6C2553A33999304E19B4B4367ADB94CECB9B4C523B8DFACD0110847417C85CD07A8838D16F6F6DA83879668D67EA7238BD8ADE3CED514CC42E3247A3E73836DC14D4DBAC92CA33FDD7A42376B7163733A519206AD26FACDB660E19D97ABADC0DD8C80D9F27F7A464F53956D2DEC1FFC803201575BDC878FB2A1FF742E006EAE4"
+            },
+            {
+                "uid": "0xB9634194F43D148E6F84CAAFD17CB608CBF81040C8ABC848E2963FB471788648",
+                "conf": {
+                    "name": "Chatter",
+                    "icon": "icon.png",
+                    "version": "1.12.0",
+                    "description": "Social Message Web",
+                    "browser": "internal",
+                    "category": "Social",
+                    "permission": "read"
+                },
+                "sessionid": "0xC04E7C02A88D6FF10918E592CD4BB5EEB948B29839E656785A4277AB5680B8ACF5E3C9F023FBF371AC3C34BC83C24F0B75D083FB20D2FAFA6B926321409A23A78ED0A949DEEBBDEBA373C140600F4521C58D9E8636F7E22F737B96031E0B34885872A094D6CE7B91A1D566E26875534A2ADCBC6B849F64691EED64471BA8C3F1"
+            },
+            {
+                "uid": "0x69374D7AE90DBDBB5CD48852C41637458162C4DB952506BA48504693222D52A0",
+                "conf": {
+                    "name": "Docs",
+                    "icon": "favicon.ico",
+                    "version": "2.1.0",
+                    "description": "Learn more about Minima",
+                    "browser": "internal",
+                    "category": "Utilities",
+                    "permission": "read"
+                },
+                "sessionid": "0x9B176DECC5DB89854816E43F31D6B5A838D37793F24EF71F53E07E6619F64C503569E31203722890C395064CED513D6F350BB0272BA659AFE8D19B630CF9A4DBEF4FE10C91A49D71F9ABAC781C9ED3B379178E46EC22EA3D7D8293A6575958193FBC56F85AE7F80A1284D968A5DEE30CE6D5CD639E520C10A52B1DB0A969CA6D"
+            },
+            {
+                "uid": "0x41B36520B7D8B3AC4B42709ACD9B76DF5239B977D38059E0C746FFB72D27A18F",
+                "conf": {
+                    "name": "Ethwallet",
+                    "icon": "icon.png",
+                    "version": "1.11.0",
+                    "description": "A Wrapped Minima, ERC-20 compatible Wallet",
+                    "browser": "internal",
+                    "category": "Finance",
+                    "permission": "read"
+                },
+                "sessionid": "0x2120A54DD485B7D382C1689C7A88E3C6548FE4D1671C801A1F73152FEC584479CD6AA40F5A4C9F36392C84B3593A55E1840763B70D4A27102D4789845671960E6CA1237B6E447A663CCCFC48BDB30199484B002CE6678A15A0BAD047BF8F8F78AB5B48D562E9FEA2FA8C80D10EB5E3D43924BA76F0A75CEEDAC34394254CF57B"
+            },
+            {
+                "uid": "0xFEE46CE093A4C493AAC7B768F8B1578338C69731A76B1A5DDC6D230799EFDF95",
+                "conf": {
+                    "name": "Filez",
+                    "icon": "icon.png",
+                    "version": "1.9.4",
+                    "description": "Simple file manager",
+                    "browser": "internal",
+                    "category": "Utilities",
+                    "permission": "read"
+                },
+                "sessionid": "0x6C80EE265FED40A0F4244B1BC4704434391299DDE6A4B812B0DBC3899BC2C70309D5790E31B5BDD9500BF6AFF19692FE4B0941752692B0F5853F76015431B9DAB897BC30AF09AD93F000F6B9A5C81606E4CC5D3578F208930CEAAF67E92519B33D41E2A14BB9749329C90BF8C7BBC499BE8C6E0285A813C974954F7F48DF7BDD"
+            },
+            {
+                "uid": "0xB227CBFEB7FD08044DDD7B1D4F49EA12B63B4F60D9AE637B59AA75662848CA2C",
+                "conf": {
+                    "name": "Future Cash",
+                    "icon": "favicon.ico",
+                    "version": "2.7.1",
+                    "description": "Send cash to the future!",
+                    "browser": "internal",
+                    "category": "Finance",
+                    "permission": "read"
+                },
+                "sessionid": "0x96EEA155F0FF1601BD77859E0423A49EBE2A448BA0E3A6C5BA1571EC176CA977FF39C653B4EF00E8838068E0B4A97F335914C58AEBDA32535D5648744EE8744C06AA59A613560F7EB294BCE8B44B80A5E81AD936464680F5740315A0D5DFD98FFF22CE69ECE7BEC872CDD8301E2FCF9ADB065AE7F5EF765A2F97FF7CE0468FA2"
+            },
+            {
+                "uid": "0xB1989ED0822FCDD7C85A5CD0B9B7311FAF2A567D9B6542ED9D3F709928D74B08",
+                "conf": {
+                    "name": "Health",
+                    "icon": "icon.png",
+                    "version": "1.3.2",
+                    "description": "View your minima node network status",
+                    "browser": "internal",
+                    "category": "System",
+                    "permission": "read"
+                },
+                "sessionid": "0x43343CB358952EFCCB70F76BFB5060CA1CE566E0B830269E252AEE47B6891985FE3A27ECFE2DFB9A89710B083230308FDD4F5EAFF14277F724EB774ECA2EADD2378064D93A68A5042A95A0C33B1AE25F08DFBA9C411BC7B1160671A3BEFA36493E9CD5FDD2D50537FA37EF9AC393139252DE3ED87072E95CA0ABB7E3AA451B3D"
+            },
+            {
+                "uid": "0x5176D9618FDF57AA352DEB40E5DE9A2E2C3C412E56503BDB4349894802601BE9",
+                "conf": {
+                    "name": "Logs",
+                    "icon": "icon.png",
+                    "version": "1.0.4",
+                    "description": "View the logs for your minima node",
+                    "category": "Utilities",
+                    "permission": "read",
+                    "browser": "internal"
+                },
+                "sessionid": "0xCF1AF0736DB5301AA3E42532574093A7EC1F463D335CAB399D9BB2FE370863938B99F19D5157BDFF9DA7A0F87EC58A8012F8D62131AE46BCC4180B15650798BEDFC9B59BBFB114C52F21E8FA6B8831B36795B0B758EAF27AE32E322FF86AD9CCDD47176F45D282D463CC55FE3FA2DB96BC6795184981FC899E2E574589CA01CB"
+            },
+            {
+                "uid": "0x69545C15F7C13EB4480BA1DB9200DAFFD849D35F53518861F0837B8A4BEB91FB",
+                "conf": {
+                    "name": "Lotto",
+                    "icon": "./images/coinicon.png",
+                    "version": "1.0.0",
+                    "description": "Secure fair unstoppable lotto game",
+                    "category": "Games",
+                    "permission": "read",
+                    "browser": "internal"
+                },
+                "sessionid": "0xC5D3662ABC6011E797457B07E359D753C16C00DAD8FC5AB94BFE09117634019CAAC4C742AE9F7E7D4CB110C5114AEE73EEAA597DB2B971C8C6CB1A0589B4D3F5E3704BD0FC5EBF8340EE9D5F8EB2F9416CEA7D00EEC3FC3623589B1509F03929D764F81B78913D0CE02041E160658AE9246C4C682F03AAEF8683693A094A0A1E"
+            },
+            {
+                "uid": "0x02CDF709EE99030D0CE55D9FEB30E64BDC3C1344FDA892D104E78BC63AA2E075",
+                "conf": {
+                    "name": "Linux",
+                    "icon": "./images/linux.png",
+                    "version": "0.9.5",
+                    "description": "Small Embedded Linux system with multiple programming languages",
+                    "category": "Dev Tools",
+                    "permission": "read",
+                    "browser": "internal"
+                },
+                "sessionid": "0x89E74B45D0EE2FCC6DCE3C934F6A4E9C54C360ADCE5FCDA1D055346C5D4ED9ACC9D517463A14C0187A7167CA070D3111C7E4F300141171701EF842E59212C211F7F6FD828D3BCB83BEBE3F7472760046C7AA0F5391194BE4A32635A33780EA47D7D622893C94AC0D9EA1DA4DA00416DF58001796B96E4F97231D30CB7B716D05"
+            },
+            {
+                "uid": "0xD6F8886EB5D59C9688912AFE4E0033830B1CF17CAD259345DA5690B8D2A70A15",
+                "conf": {
+                    "name": "MaxContacts",
+                    "icon": "icon.png",
+                    "version": "1.14.0",
+                    "description": "View and edit your Maxima contacts",
+                    "category": "Social",
+                    "permission": "read",
+                    "browser": "internal"
+                },
+                "sessionid": "0xC15DE033BFB91E80F24484F05F7FA40D74D013C439C46A54146A5C873D5C119CAEFFB1169D255A742465C538FF271734F35E86BC6C1DF8FA35C73F0E4AC2C12FAC0179FC37B9EDDFED785DA4494AEAB45E1B40F9774BFFE22D975E64D26FF7A78EFDCD061E0A1DFA3B5A461F1438CBCD972D5F28DF70C16BDCEE412BFFD7B0BA"
+            },
+            {
+                "uid": "0x56293533018042A9822214409E42DDB8E20EDF4CBFB1FA90ABC0ABA19216BCCB",
+                "conf": {
+                    "name": "Maximize",
+                    "icon": "icon.png",
+                    "version": "1.3.0",
+                    "description": "Minima yield product",
+                    "browser": "internal",
+                    "category": "Finance",
+                    "permission": "read"
+                },
+                "sessionid": "0x96B6A39263CF90BE8340AA0210EE096F148AF615E3AEAFACCEDF6FE6D31D3980B2270E8F402B21B13C13C2F96B5B6DFC0EE727475FF55D181B34AFE43BA613C5EBD7D85109B1102EAD966B525E7D3DE3839421EF8FC132DD0D0C1EB708C63E32D812005E2EE2D6E2B2CEDB7C4FFDF86322EE9CB98DBBD66540632F1F72A71A5F"
+            },
+            {
+                "uid": "0xB11DA91F27B0691D213347B9711CC7428C849FA2F658FEA3D652E455227EEF3E",
+                "conf": {
+                    "name": "MaxSolo",
+                    "icon": "maxsolo.png",
+                    "version": "2.7.2",
+                    "description": "P2P chat app running over Maxima",
+                    "browser": "internal",
+                    "category": "Social",
+                    "permission": "read"
+                },
+                "sessionid": "0x1151C7630A4CE90202ED25BAA5E6CD98D95594BBD7429CE31F57B63B3145BD473F7646BFFFF8A4C8315B84B6937BA9A1749F75840B5190FA02156B46685FC88E32EBC0D890D23A653BFDE32850BA42BFE318F9E6C41ADF4B47205E0C8B3690A313A25B8E240A004743A30397D3043259EC3F2C075B754ED894C0E327E1A50A1D"
+            },
+            {
+                "uid": "0xB0E3BE15420995FF7AD0F48B9A8DB41067CDFF84106492D555A9B9735650B668",
+                "conf": {
+                    "name": "Miniswap",
+                    "icon": "icon.png",
+                    "version": "2.21.0",
+                    "description": "Swap tokens OTC or Order book DEX and provide liquidity",
+                    "browser": "internal",
+                    "category": "Finance",
+                    "permission": "read"
+                },
+                "sessionid": "0xBCEE93C79C94C37F68E11B572F203763326D38B7CC78894AA66B6BD984C34F6D4C0E0569A2F3515D34F7600416245E1728704A057D912EFDDF56C189080A80D6DC0044FB403AC782E25CC079F4199B367E327B75A3EE0B3C67BA2CC70E5D8030300EC1590FA077BC32FDAA3F5B453E5F5CCFC7FAA79596B373BEA59C9B2CBA6C"
+            },
+            {
+                "uid": "0x74D8BE4C09F02827997F9CA9D68E658042D29780EEDDDF1BF4A8213699FFF543",
+                "conf": {
+                    "name": "MiniFS",
+                    "icon": "minifs.png",
+                    "version": "1.4.4",
+                    "description": "Open Broadcast File System",
+                    "category": "Social",
+                    "permission": "read",
+                    "browser": "internal"
+                },
+                "sessionid": "0x6BB15623FB270C1CDCAF6F29962C44A31B1B307416A7A3B03C6BB84A3FC95CA572A1530F7598C8D4B05FBEADF7173452DA7ACED45BA94B12BC049073E817696896B1278EEEA6B55AFC96FACB465070B5076904851DDC684B2A009437797A9C0EC150F1CE71A9F63AC9C250246F860EEE37F375F7905597C5E64AFD37063918D7"
+            },
+            {
+                "uid": "0x79855497839FA17B28F8651B5E53993DCEC4ADF982BF1F4A373B4D2AAA7D482B",
+                "conf": {
+                    "name": "MiniWEB",
+                    "icon": "browser.png",
+                    "version": "1.6.1",
+                    "description": "Web browser for MiniFS files",
+                    "category": "Social",
+                    "permission": "read",
+                    "browser": "internal"
+                },
+                "sessionid": "0xC22D3C54E8029708D39AAC98BE4F02DDDC332E253FAA4AD52D5978B770E0D8F18BB13C4CE11904EDA52F7B25AE13981CB19E3337772037BDD8FBE0BC6886E05BDCE6D001A78E54347094FB4B9B1D020179074DE2C85B017B3EAB7037E6D8BD8F7A1D1BB0D8AE20548A86975692815A2ECA5403C896166F097664F674CFC5E70B"
+            },
+            {
+                "uid": "0x4839BC9F547812BF5441F5DFA0D9641913534987E73F7EF5209BB3076C60DCE8",
+                "conf": {
+                    "name": "News Feed",
+                    "icon": "news.png",
+                    "version": "2.0.1",
+                    "category": "Social",
+                    "description": "Keep up to date with Minima News",
+                    "permission": "read",
+                    "browser": "internal"
+                },
+                "sessionid": "0xFCB0C6EC9770888B58CB8DEB9CDECA80C6BFC75E902CFD38196F71F421D8B0B6555F0576D4B65FC71D024F70C3B98D973400BDE6D630D4FF86B02A35ADB0339A8C8D3ABD4C485E6B9D1D6C418FC7B40E7F490AD0B161CCEED42D4B2EBFF7B576622CA29357AED22E9D8A7D1B9ABBA9223A390603305B0D6B88C1A4DFF795DCA8"
+            },
+            {
+                "uid": "0x2F557A63905B07AE37D3A7AF51F59251E990EA9C8C529211190E4A50EB669F2B",
+                "conf": {
+                    "name": "Script IDE",
+                    "icon": "scriptide.png",
+                    "version": "3.1.4",
+                    "description": "Integrated developer environment for creating, testing and debugging Minima KISSVM scripts.",
+                    "browser": "internal",
+                    "category": "Dev Tools",
+                    "permission": "read"
+                },
+                "sessionid": "0x7D0DC56D57AF997ACAEBA17C7FA6AE95B91B60598F851FEA6E3FD076B4FBBF73B9C95D25718E13ADF1E84FF2F86602B368E559094DA548F55654583884A27C74301F35A88D580BF29C222CF6669B056429E7AE8E6248B1ED089B830456DCBFD6124764D3BD817A43291A3AE4F61A3DBE6110ACA2EE2441D1E7CA25130904397E"
+            },
+            {
+                "uid": "0xB9B73712A72324E34237723F7A8184AE257847BE121A333F4B5EB376F26FC903",
+                "conf": {
+                    "name": "Shout Out",
+                    "icon": "shoutout.png",
+                    "version": "1.4.1",
+                    "category": "Social",
+                    "description": "Chat to everyone about anything",
+                    "permission": "read",
+                    "browser": "internal"
+                },
+                "sessionid": "0x2CE1EDB8DCEFC64DC50CE2871F3FABAB912D957BD785F8EC2EDDCE3244C87BC1B4859C4055574401E112BCD08471900AB76ED583296EB1850A7441B0EDBE346844338211F3FE53BCDD4315599B64FB2FF2258DCA021DBA8FD29D5539FC7FAC1F68EE6F4E3C0C6EC2D8E7CF6D62C4815AAC0A9FC15133A9AD2DC64FF0FA608B58"
+            },
+            {
+                "uid": "0xF011D6A799DB449B2017336FC9436B60D57F8A7076A7BE7F058F29D78596193C",
+                "conf": {
+                    "name": "Soko",
+                    "icon": "icon.png",
+                    "version": "1.1.1",
+                    "description": "Minima NFT Marketplace, share your art with other Minimalists",
+                    "browser": "internal",
+                    "category": "Finance",
+                    "permission": "read"
+                },
+                "sessionid": "0x18B25010537828263A3BF85E9D0738B5D6A6DABC90A907F72732DD6D0F521D05DE825A52DDC551561BAE1A969362D2AF0FAC320899E3A67BD37C7CA22B4386C6FD946AF6BB126216935F751FA5DD25FBA8F8BAEF54BD192E87E56D3D508202D3CBD5CEF80E4B31DA4243FC86B8C8C4ECCA38F61805825D7B36189A7A61734D23"
+            },
+            {
+                "uid": "0x8B4BA8E781A6A74EE528829B6F3FD28F2DE7E214A39F593263C9CC40B98CC756",
+                "conf": {
+                    "name": "SQL Bench",
+                    "icon": "sql.jpg",
+                    "version": "0.6.1",
+                    "category": "Dev Tools",
+                    "description": "MiniDAPP SQL Workbench",
+                    "permission": "read",
+                    "browser": "internal"
+                },
+                "sessionid": "0xA582D36A3A52350DA8426D9EE346EA47044B726B0D1B0F854D7FF358B55E1D45AFE6877C3D784542B95701CFF8EF93DFECDA7F52C00E4F07D31974BF8EE5613346F7ADACE34F73F3AEFC79BE2E6051A6534680DE8C212A03C8DFF4B74AD12FB87C245A13BE631E97983351D08D56B4EBC843F1F2D81F60B68FDE37B027A91047"
+            },
+            {
+                "uid": "0xBE52FB3EA7962D847CDC0FC2F22F48D94C63BC34EB8A847E992162C694A7948B",
+                "conf": {
+                    "name": "Terminal",
+                    "icon": "icon.jpg",
+                    "version": "3.1.8",
+                    "description": "Terminal CLI for Minima",
+                    "browser": "internal",
+                    "category": "Utilities",
+                    "permission": "read"
+                },
+                "sessionid": "0x0353E415E74AE0DDD6F1E8599CCB9B783D941B920F6787438EC76F4E81E42A7B2EDD6EA2AE0369DB7547B4C10935F31BB579271C1D98763A619076C6C1997ABCF11FD1B07AE5A3A1C9C61FE584CCAD0C272AA1E73570B60AFA99B746597B2885A66511F534561870E252C0B8EF6EB5921ECD8846D719DA0504BF935C9F50DAC3"
+            },
+            {
+                "uid": "0xAA17CCF69196194EAD3B1B7B40AFDE037922A30BC4F27F2F3A5A5F8B6E9C2FF6",
+                "conf": {
+                    "name": "Thunder",
+                    "icon": "thunderpay.png",
+                    "version": "1.0.1",
+                    "description": "P2P Omnia payment channels",
+                    "category": "Omnia",
+                    "permission": "read",
+                    "browser": "internal"
+                },
+                "sessionid": "0xC5068397FACBF9879D86E25BA5721AC531C661E1C057CC7E016068AC8AC3DDD19A36A840D2C2A5C7CB4BE53B73665622DC2D84ECA2BCEDD16DEDC5D3AB765CD6BFD93DAD5A9E678FB8584D56E7668142B754FF9A5A400EAD94EFE059CA0354982CC97DE1AB77276A37703E9411F71693F6A46163F6B914E53E77BF66F78ACEC0"
+            },
+            {
+                "uid": "0x180F1B4FFE12A90A5BE83406CDD3343BB617F2035D2FA684BFFDBCDD73F33209",
+                "conf": {
+                    "name": "Token Studio",
+                    "icon": "icon.png",
+                    "version": "1.5.0",
+                    "description": "Create simple, custom and non-fungible tokens",
+                    "browser": "internal",
+                    "category": "Finance",
+                    "permission": "read"
+                },
+                "sessionid": "0xE96AF0CC071BFEADA3DDC7A4857674DE84C255278564E938B80E868FB02FA4910D53BAED101861185223A38242C41EAFE771CB57D726C03F0808207035684839BD7090B300294ADDA40D3B8A8B8FBC92341E89F219DDFEEDF5BD578644281C150B0A0F93E8E6C4C99A05A06C6D46C0238832D671CF741A75C817C6A440D144B8"
+            },
+            {
+                "uid": "0x09D16C779077240ECFCE39324F0C8AA4998C91B642572EFBD498A9C1482874F4",
+                "conf": {
+                    "name": "The Safe",
+                    "icon": "vault.png",
+                    "version": "1.7.0",
+                    "description": "Secure your coins in the Safe",
+                    "category": "Finance",
+                    "permission": "read",
+                    "browser": "internal"
+                },
+                "sessionid": "0x4182A8DBC7531ABFB4938DEFC2DD09F0324D03E2D0570C2195D20EFEAC6EC6134379C5BF6EE27B3F0CAA9F53C78D5CF596E4D7703378209B7F13249E6A5EF39C81345CB92101F042EA3F7A6D0BA3CCB506E4C8393745C901A3452405BD4CFE5DA40F641CAC74392BAACE069E1460BE64D8EED2D653BE48E05BD94D90498F059C"
+            },
+            {
+                "uid": "0x76C54359B8043B493FC941DE859D0A2B5503841123BA158B14F0369C723BD9D1",
+                "conf": {
+                    "name": "Vestr",
+                    "icon": "favicon.ico",
+                    "version": "1.8.1",
+                    "description": "Create & collect vesting schedules for any token on the Minima blockchain.",
+                    "browser": "internal",
+                    "category": "Finance",
+                    "permission": "read"
+                },
+                "sessionid": "0x72082A24F6BCD192704A271E18FC853282E94292EEEE1AB7CD84FE7F7FA699A29069171C6378E6D223FC6A2186D23ABC6EC028E5FC55C0D843A0E3A2BEB2DE82BCE7AD9F024EEF9A1629574AFDA2C6852CBE8CBD74387F0436085B850CFDA5BC1D8648C7F056D19D8C8A3F781EF00BEC938206F3CA001986D7B17BA76F4FEDBB"
+            },
+            {
+                "uid": "0x8D27F73041E84635BAC346445CA2DDACF483C030CE7BB9C29EC7C188B1EBBA3C",
+                "conf": {
+                    "name": "Wallet",
+                    "icon": "icon.svg",
+                    "version": "3.0.17",
+                    "description": "Wallet MiniDapp",
+                    "browser": "internal",
+                    "category": "Finance",
+                    "permission": "read"
+                },
+                "sessionid": "0x37E6DA05B62A69ECF5F746ECCA0E81BE8D6A7383F24F6F4F5434D9A70FEB59ED5BFB1EEBEDB0B7921AC8674AF089A532C9842A5FC70A5FDAD94976D98E726A038F75701CA45081222BAB948220A71CB11576CAB45104DD0DE8A4EE315A329FE60A33A4DE4F76B1ECE14F550413EAEF43CE828926D12BF34E6320C3C7573A2B16"
+            },
+            {
+                "uid": "0xE2FFB2D8BC2CA33F6218C636CF55B9A7A9F3DE35EF23EF3B5BB4EA5389B3300C",
+                "conf": {
+                    "name": "MiniHUB",
+                    "icon": "icon.png",
+                    "version": "0.24.4",
+                    "description": "MinimaOS home screen",
+                    "permission": "write",
+                    "browser": "internal"
+                },
+                "sessionid": "0xD5D92E4DD1EEB4C374B419A22A0C710938ACD60248CBFD07E23DD867E3665E4FB1F5CE7C9778657112859F7010064284651002662ECC7A22CB38D3C61F601B24C40C143B28E34A168EC2DCAFDECA2F1A7A8DACA1342479E9ADAE6AE6569B4CAC30672D5629F62A1F18D17E199D71BC36412BC8C90EA3C6A30DBF5D25D89477FC"
+            }
+        ]
+    }
+}

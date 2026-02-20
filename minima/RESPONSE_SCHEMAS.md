@@ -186,6 +186,13 @@ Send Minima or tokens to an address. Returns full TxPoW on success.
 
 Hash data using Minima's Keccak-256 hash function.
 
+> **AGENT WARNING — LOCAL OPERATION ONLY:**
+> `hash` computes a hash locally. It does **NOT** write anything to the blockchain and does **NOT** return a `txpowid`. The hash output **cannot** be looked up on the explorer.
+>
+> To create an **on-chain record**, use `record_data.sh` or the SDK `recordOnChain()` / `record_onchain()` method instead. See [ONCHAIN_RECORDS.md](ONCHAIN_RECORDS.md).
+>
+> **Explorer links use `txpowid` (from transactions), not hash output.**
+
 **Parameters:** `data:hello` or `data:0xABCD`
 
 ```json
@@ -198,7 +205,7 @@ Hash data using Minima's Keccak-256 hash function.
 | Field | Type | Meaning |
 |-------|------|---------|
 | `input` | string | Original input |
-| `hash` | string | Keccak-256 result, `0x`-prefixed |
+| `hash` | string | Keccak-256 result, `0x`-prefixed. **Local only — not a txpowid, not on-chain.** |
 
 ---
 

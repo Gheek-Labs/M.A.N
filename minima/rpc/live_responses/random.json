@@ -1,0 +1,12 @@
+{
+    "command": "random",
+    "status": true,
+    "pending": false,
+    "response": {
+        "size": "32",
+        "random": "0x63733C4E9DB63E81B41B199118602DD7A2F687886EE9D8BD930FAAC76D7F2D09",
+        "hashed": "0x11132C83AC8B435DBB857D502E374E0AA81A67541D1A835ACC9C6B092AC38CA0",
+        "type": "sha3",
+        "keycode": "ZRJ7-79RD-UG6Q-M6CH-1G2R"
+    }
+}

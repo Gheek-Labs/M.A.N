@@ -1,0 +1,11 @@
+{
+    "command": "maxextra",
+    "params": {
+        "action": "listallowed"
+    },
+    "status": true,
+    "pending": false,
+    "response": {
+        "allowed": []
+    }
+}

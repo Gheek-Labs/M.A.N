@@ -43,6 +43,8 @@ A one-click, agent-friendly, headless Minima blockchain node setup with stable M
 │   ├── mxid_sign.sh         # Sign with Maxima key
 │   ├── mxid_verify.sh       # Verify signature
 │   ├── MXID.md              # MxID specification
+│   ├── ONCHAIN_RECORDS.md      # On-chain data record guide (hash vs txpowid)
+│   ├── record_data.sh         # Post data on-chain (returns txpowid)
 │   ├── BACKUP.md              # Backup, restore, resync guide
 │   ├── AGENT_QUICKSTART.md    # Agent operations guide
 │   ├── COMMANDS.md            # Full RPC command reference
@@ -163,6 +165,7 @@ See `minima/RESPONSE_SCHEMAS.md` for complete field semantics, types, and agent 
 Machine-readable schemas in `minima/rpc/schemas/*.schema.json`.
 
 ## Recent Changes
+- 2026-02-20: Phase 4: On-chain record recipe (ONCHAIN_RECORDS.md, record_data.sh, SDK recordOnChain helpers, hash schema warnings)
 - 2026-02-20: Added templates: node-web-dashboard, python-bot, ros2-bridge
 - 2026-02-20: Added language integration kits (integration/python + integration/node)
 - 2026-02-20: Added response schema system (RESPONSE_SCHEMAS.md + rpc/schemas/*.schema.json)

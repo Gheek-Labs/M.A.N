@@ -1,0 +1,13 @@
+{
+    "command": "help",
+    "params": {
+        "command": "txnstate"
+    },
+    "status": true,
+    "pending": false,
+    "response": {
+        "command": "txnstate",
+        "help": "[id:] [port:] [value:] - Add a state variable",
+        "fullhelp": "\ntxnstate\n\nAdd a state variable to a transaction.\n\nid:\n    The id of the transaction.\n\nport:\n    Port number of the state variable, from 0-255.\n\nvalue:\n    Value for the state variable.\n\nExamples:\n\ntxnstate id:multisig port:0 value:0xFED5..\n\ntxnstate id:multisig port:1 value:100 \n\ntxnstate id:multisig port:1 value:\"string\" \n"
+    }
+}

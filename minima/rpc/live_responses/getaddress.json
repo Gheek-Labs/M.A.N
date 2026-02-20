@@ -1,0 +1,14 @@
+{
+    "command": "getaddress",
+    "status": true,
+    "pending": false,
+    "response": {
+        "script": "RETURN SIGNEDBY(0x364BDF449C0BB5D58636CE33DC55E59D7C920191A1F188AADA6BFD956743A8B3)",
+        "address": "0x6CE21C6073E84C8EACD64B9A70606343AA4AD19049F241E8C90CD570E5DF4B90",
+        "miniaddress": "MxG083CS8E60SV89W7APYWBJ9Z60ZQ3Y95D3429U90UHW8CQYZEBNQBW08JZF7U",
+        "simple": true,
+        "default": true,
+        "publickey": "0x364BDF449C0BB5D58636CE33DC55E59D7C920191A1F188AADA6BFD956743A8B3",
+        "track": true
+    }
+}

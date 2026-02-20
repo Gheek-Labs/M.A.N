@@ -1,0 +1,6 @@
+{
+    "command": "txnlist",
+    "status": true,
+    "pending": false,
+    "response": []
+}

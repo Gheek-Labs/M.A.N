@@ -1,0 +1,104 @@
+#!/bin/bash
+#
+# Record data on the Minima blockchain.
+#
+# Posts a self-send transaction with data embedded as state variables.
+# Returns the txpowid (on-chain proof) and explorer link.
+#
+# Usage:
+#   ./record_data.sh <data> [label]
+#
+# Examples:
+#   ./record_data.sh "hello world"
+#   ./record_data.sh "hello world" "my-label"
+#   ./record_data.sh "0x3a7b2c..." "document-hash"
+#
+# WARNING: hash != on-chain record
+#   The 'hash' command is purely local (no txpowid, not on-chain).
+#   This script creates an actual on-chain transaction.
+
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+RPC_PORT="${RPC_PORT:-9005}"
+RPC_URL="http://localhost:${RPC_PORT}"
+RECORD_AMOUNT="0.000000001"
+
+if [ -z "${1:-}" ]; then
+    echo "Usage: $0 <data> [label]"
+    echo ""
+    echo "Records data on the Minima blockchain via a self-send transaction."
+    echo "Returns txpowid (on-chain proof) and explorer link."
+    echo ""
+    echo "  data   - String or 0x-prefixed hash to record"
+    echo "  label  - Optional label/description"
+    echo ""
+    echo "WARNING: 'hash data:...' is a LOCAL operation (not on-chain)."
+    echo "         This script creates an actual on-chain record."
+    exit 1
+fi
+
+DATA="$1"
+LABEL="${2:-}"
+TIMESTAMP="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+
+rpc() {
+    local cmd="$1"
+    local encoded
+    encoded=$(echo "$cmd" | sed 's/ /%20/g; s/{/%7B/g; s/}/%7D/g; s/"/%22/g; s/:/%3A/g; s/,/%2C/g')
+    local response
+    response=$(curl -s "${RPC_URL}/${encoded}" 2>/dev/null)
+
+    if [ $? -ne 0 ] || [ -z "$response" ]; then
+        echo "Error: Cannot connect to Minima node on port $RPC_PORT" >&2
+        exit 1
+    fi
+
+    echo "$response"
+}
+
+check_jq() {
+    if ! command -v jq &>/dev/null; then
+        echo "Error: jq is required. Install with: nix-env -iA nixpkgs.jq" >&2
+        exit 1
+    fi
+}
+
+check_jq
+
+ADDRESS=$(rpc "getaddress" | jq -r '.response.miniaddress // empty')
+if [ -z "$ADDRESS" ]; then
+    echo "Error: Could not get node address. Is the node running?" >&2
+    exit 1
+fi
+
+STATE_JSON="{\"0\":\"${DATA}\",\"2\":\"${TIMESTAMP}\"}"
+if [ -n "$LABEL" ]; then
+    STATE_JSON="{\"0\":\"${DATA}\",\"1\":\"${LABEL}\",\"2\":\"${TIMESTAMP}\"}"
+fi
+
+RESULT=$(rpc "send address:${ADDRESS} amount:${RECORD_AMOUNT} state:${STATE_JSON}")
+
+STATUS=$(echo "$RESULT" | jq -r '.status // false')
+if [ "$STATUS" != "true" ]; then
+    ERROR=$(echo "$RESULT" | jq -r '.error // "Unknown error"')
+    echo "Error: Transaction failed — $ERROR" >&2
+    exit 1
+fi
+
+TXPOWID=$(echo "$RESULT" | jq -r '.response.txpowid // empty')
+if [ -z "$TXPOWID" ]; then
+    echo "Error: No txpowid in response" >&2
+    echo "$RESULT" | jq . >&2
+    exit 1
+fi
+
+EXPLORER_URL="https://explorer.minima.global/transactions/${TXPOWID}"
+
+jq -n \
+    --arg txpowid "$TXPOWID" \
+    --arg explorer "$EXPLORER_URL" \
+    --arg data "$DATA" \
+    --arg label "$LABEL" \
+    --arg timestamp "$TIMESTAMP" \
+    '{txpowid: $txpowid, explorer: $explorer, data: $data, label: $label, timestamp: $timestamp}'

@@ -203,6 +203,11 @@ class MinimaClient {
 
   /**
    * Hash data using Minima's Keccak-256.
+   *
+   * WARNING: This is a LOCAL operation. It does NOT write to the blockchain
+   * and does NOT return a txpowid. To create an on-chain record, use
+   * recordOnChain() instead.
+   *
    * @param {string} data - String or 0x-prefixed hex data
    * @returns {Promise<{ input: string, hash: string }>}
    */
@@ -212,6 +217,54 @@ class MinimaClient {
     return {
       input: resp.input || '',
       hash: resp.hash || '',
+    };
+  }
+
+  /**
+   * Post data to the blockchain permanently via a self-send transaction.
+   *
+   * Records data as state variables in a transaction. Returns the txpowid
+   * which is the on-chain proof, searchable on the explorer.
+   *
+   * State layout:
+   *   0 = data (your payload — string or hash)
+   *   1 = label (optional description)
+   *   2 = timestamp (ISO 8601 UTC, auto-generated)
+   *   3+ = extraState entries (if provided)
+   *
+   * @param {string} data - String or 0x-prefixed hash to record on-chain
+   * @param {Object} [options]
+   * @param {string} [options.label] - Optional label/description
+   * @param {Object} [options.extraState] - Additional state entries {key: value} for keys 3+
+   * @returns {Promise<{ txpowid: string, explorerUrl: string, data: string, label: string, timestamp: string, block: string, date: string, raw: Object }>}
+   */
+  async recordOnChain(data, { label = '', extraState = {} } = {}) {
+    const addr = await this.getaddress();
+    const address = addr.miniaddress;
+    const timestamp = new Date().toISOString().replace(/\.\d{3}Z$/, 'Z');
+
+    const state = { '0': String(data), '2': timestamp };
+    if (label) state['1'] = String(label);
+    for (const [k, v] of Object.entries(extraState)) {
+      state[String(k)] = String(v);
+    }
+
+    const stateJson = JSON.stringify(state);
+    const cmd = `send address:${address} amount:0.000000001 state:${stateJson}`;
+
+    const result = await this.command(cmd);
+    const resp = result.response || {};
+    const txpowid = resp.txpowid || '';
+
+    return {
+      txpowid,
+      explorerUrl: `https://explorer.minima.global/transactions/${txpowid}`,
+      data,
+      label,
+      timestamp,
+      block: resp.header?.block || '',
+      date: resp.header?.date || '',
+      raw: resp,
     };
   }
 

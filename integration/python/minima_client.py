@@ -206,6 +206,10 @@ class MinimaClient:
         """
         Hash data using Minima's Keccak-256.
 
+        WARNING: This is a LOCAL operation. It does NOT write to the blockchain
+        and does NOT return a txpowid. To create an on-chain record, use
+        record_onchain() instead.
+
         Args:
             data: String or 0x-prefixed hex data
 
@@ -217,6 +221,61 @@ class MinimaClient:
         return {
             "input": resp.get("input", ""),
             "hash": resp.get("hash", ""),
+        }
+
+    def record_onchain(self, data, label="", extra_state=None):
+        """
+        Post data to the blockchain permanently via a self-send transaction.
+
+        Records data as state variables in a transaction. Returns the txpowid
+        which is the on-chain proof, searchable on the explorer.
+
+        State layout:
+            0 = data (your payload — string or hash)
+            1 = label (optional description)
+            2 = timestamp (ISO 8601 UTC, auto-generated)
+            3+ = extra_state entries (if provided)
+
+        Args:
+            data: String or 0x-prefixed hash to record on-chain
+            label: Optional label/description
+            extra_state: Optional dict of {state_key: value} for keys 3+
+
+        Returns:
+            dict: {txpowid, explorer_url, data, label, timestamp, block, date, raw}
+
+        Raises:
+            MinimaError: If transaction fails
+        """
+        import datetime
+
+        addr = self.getaddress()
+        address = addr["miniaddress"]
+        timestamp = datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
+
+        state = {"0": str(data), "2": timestamp}
+        if label:
+            state["1"] = str(label)
+        if extra_state:
+            for k, v in extra_state.items():
+                state[str(k)] = str(v)
+
+        state_json = json.dumps(state)
+        cmd = f"send address:{address} amount:0.000000001 state:{state_json}"
+
+        result = self.command(cmd)
+        resp = result.get("response", {})
+        txpowid = resp.get("txpowid", "")
+
+        return {
+            "txpowid": txpowid,
+            "explorer_url": f"https://explorer.minima.global/transactions/{txpowid}",
+            "data": data,
+            "label": label,
+            "timestamp": timestamp,
+            "block": resp.get("header", {}).get("block", ""),
+            "date": resp.get("header", {}).get("date", ""),
+            "raw": resp,
         }
 
     def random(self):

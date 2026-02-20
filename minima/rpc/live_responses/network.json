@@ -1,0 +1,130 @@
+{
+    "command": "network",
+    "status": true,
+    "pending": false,
+    "response": {
+        "connections": [
+            {
+                "welcome": "Minima v1.0.42",
+                "uid": "10G16ANQI1G8U",
+                "incoming": false,
+                "host": "194.163.172.118",
+                "port": 9001,
+                "minimaport": 9001,
+                "isconnected": true,
+                "valid": true,
+                "connected": "Fri Feb 20 10:41:48 GMT 2026"
+            },
+            {
+                "welcome": "Minima v1.0.46",
+                "uid": "3M7O7UFNVR0EV",
+                "incoming": false,
+                "host": "89.117.60.213",
+                "port": 9001,
+                "minimaport": 9001,
+                "isconnected": true,
+                "valid": true,
+                "connected": "Fri Feb 20 10:41:58 GMT 2026"
+            },
+            {
+                "welcome": "Minima v1.0.46",
+                "uid": "EQK2424B5L0K5",
+                "incoming": false,
+                "host": "92.113.148.33",
+                "port": 9001,
+                "minimaport": 9001,
+                "isconnected": true,
+                "valid": true,
+                "connected": "Fri Feb 20 10:41:52 GMT 2026"
+            },
+            {
+                "welcome": "Minima v1.0.46",
+                "uid": "48BG3CMPUAGA9",
+                "incoming": false,
+                "host": "152.70.188.61",
+                "port": 9001,
+                "minimaport": 9001,
+                "isconnected": true,
+                "valid": true,
+                "connected": "Fri Feb 20 10:41:49 GMT 2026"
+            },
+            {
+                "welcome": "Minima v1.0.46",
+                "uid": "7K4RCTMIFIUOI",
+                "incoming": false,
+                "host": "157.173.118.242",
+                "port": 9001,
+                "minimaport": 9001,
+                "isconnected": true,
+                "valid": true,
+                "connected": "Fri Feb 20 10:39:32 GMT 2026"
+            }
+        ],
+        "details": {
+            "host": "172.31.116.66",
+            "hostset": false,
+            "port": 9001,
+            "connecting": 0,
+            "connected": 5,
+            "rpc": {
+                "enabled": true,
+                "port": 9005
+            },
+            "p2p": {
+                "address": "34.45.188.99:9001",
+                "isAcceptingInLinks": true,
+                "numInLinks": 0,
+                "numOutLinks": 5,
+                "numNotAcceptingConnP2PLinks": 0,
+                "numNoneP2PLinks": 0,
+                "numKnownPeers": 46,
+                "numUnvalidatedPeers": 0,
+                "numAllLinks": 5,
+                "nio_inbound": 0,
+                "nio_outbound": 5
+            },
+            "p2p2": "disabled",
+            "traffic": {
+                "from": "Fri Feb 20 10:39:32 GMT 2026",
+                "totalread": "49.8 MB",
+                "totalwrite": "20.0 MB",
+                "breakdown": {
+                    "reads": {
+                        "TXBLOCKID": "4.0 KB",
+                        "MAXIMA": "11.1 KB",
+                        "TXPOWID": "5.4 KB",
+                        "PULSE": "180.1 KB",
+                        "P2P": "502.3 KB",
+                        "TXBLOCKMINE": "72.0 KB",
+                        "GREETING": "1.1 MB",
+                        "PING": "1.2 KB",
+                        "TXPOWREQ": "592 bytes",
+                        "TXPOW": "848.0 KB",
+                        "sendMaxPacket": "90 bytes",
+                        "MAXIMA_CTRL": "4.6 KB",
+                        "IBD": "47.1 MB",
+                        "sendPingMessage": "88.6 KB"
+                    },
+                    "writes": {
+                        "TXBLOCKMINE_all": "15.1 KB",
+                        "PING_all": "222 bytes",
+                        "MAXIMA_CTRL_single": "2.6 KB",
+                        "PULSE_all": "36.0 KB",
+                        "TXPOW_single": "24.4 KB",
+                        "TXPOWID_all": "1.0 KB",
+                        "TXBLOCKID_all": "851 bytes",
+                        "TXPOWREQ_single": "6.4 KB",
+                        "PING_single": "36 bytes",
+                        "P2P_single": "575.1 KB",
+                        "GREETING_single": "1.3 MB",
+                        "IBD_single": "17.9 MB",
+                        "sendMaxPacket": "29.8 KB",
+                        "sendPingMessage": "354 bytes"
+                    }
+                },
+                "read": "2.5 MB/min",
+                "write": "1.0 MB/min"
+            }
+        }
+    }
+}

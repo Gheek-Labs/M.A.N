@@ -1,0 +1,9 @@
+{
+    "command": "maxextra",
+    "params": {
+        "action": "listpermanent"
+    },
+    "status": true,
+    "pending": false,
+    "response": []
+}
