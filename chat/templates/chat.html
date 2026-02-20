@@ -21,11 +21,22 @@
                         Hello! I'm your Minima node assistant. You can ask me things like:
                         <ul>
                             <li>"What's my balance?"</li>
-                            <li>"Show me my node status"</li>
+                            <li>"Show node status"</li>
                             <li>"What's my MxID?"</li>
                             <li>"List my contacts"</li>
+                            <li>"Show my NFTs"</li>
+                            <li>"Post data on-chain"</li>
+                            <li>"List my webhooks"</li>
                             <li>"Send 5 Minima to MxG..."</li>
                         </ul>
+                        <div class="quick-actions">
+                            <button class="quick-btn" data-msg="What's my balance?">Balance</button>
+                            <button class="quick-btn" data-msg="Show node status">Status</button>
+                            <button class="quick-btn" data-msg="What's my MxID?">MxID</button>
+                            <button class="quick-btn" data-msg="List my contacts">Contacts</button>
+                            <button class="quick-btn" data-msg="Show my NFTs">NFTs</button>
+                            <button class="quick-btn" data-msg="List my webhooks">Webhooks</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -69,43 +80,68 @@
             messagesContainer.appendChild(div);
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
         }
+
+        function addTypingIndicator() {
+            const div = document.createElement('div');
+            div.className = 'message assistant typing-indicator';
+            div.id = 'typing';
+            div.innerHTML = `<div class="message-content"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>`;
+            messagesContainer.appendChild(div);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function removeTypingIndicator() {
+            const el = document.getElementById('typing');
+            if (el) el.remove();
+        }
         
         function formatMessage(text) {
-            // Safe HTML escape
             const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
             
-            // Use unique placeholders
             const blocks = [];
             const ph = html => { blocks.push(html); return `<!--B${blocks.length-1}-->`; };
             
-            // 1. Extract <details> blocks, process contents recursively
             text = text.replace(/<details>([\s\S]*?)<\/details>/g, (_, inner) => {
-                // Process code blocks inside
+                inner = inner.replace(/<script[\s\S]*?<\/script>/gi, '');
+                inner = inner.replace(/on\w+\s*=/gi, 'data-blocked=');
                 inner = inner.replace(/```(\w+)?\n?([\s\S]*?)```/g, (_, lang, code) => 
                     `<pre><code>${esc(code)}</code></pre>`
                 );
                 return ph(`<details>${inner}</details>`);
             });
             
-            // 2. Extract fenced code blocks
             text = text.replace(/```(\w+)?\n?([\s\S]*?)```/g, (_, lang, code) => 
                 ph(`<pre><code>${esc(code)}</code></pre>`)
             );
             
-            // 3. Extract markdown links (escape url and label)
             text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_, label, url) => 
                 ph(`<a href="${esc(url.trim())}" target="_blank" rel="noopener">${esc(label)}</a>`)
             );
             
-            // 4. Escape remaining text
             text = esc(text);
             
-            // 5. Format inline markdown
             text = text.replace(/`([^`]+)`/g, '<code>$1</code>');
             text = text.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+
+            const lines = text.split('\n');
+            let inTable = false;
+            const out = [];
+            for (const line of lines) {
+                if (/^\|.+\|$/.test(line)) {
+                    const cells = line.split('|').filter(c => c.trim() !== '');
+                    if (cells.every(c => /^[\s\-:]+$/.test(c))) continue;
+                    if (!inTable) { out.push('<table>'); inTable = true; }
+                    out.push('<tr>' + cells.map(c => `<td>${c.trim()}</td>`).join('') + '</tr>');
+                } else {
+                    if (inTable) { out.push('</table>'); inTable = false; }
+                    out.push(line);
+                }
+            }
+            if (inTable) out.push('</table>');
+            text = out.join('\n');
+
             text = text.replace(/\n/g, '<br>');
             
-            // 6. Restore blocks
             blocks.forEach((html, i) => {
                 text = text.replace(`&lt;!--B${i}--&gt;`, html);
             });
@@ -119,15 +155,13 @@
             sendBtn.textContent = loading ? '...' : 'Send';
         }
         
-        chatForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const message = messageInput.value.trim();
-            if (!message) return;
+        async function sendMessage(message) {
+            if (!message.trim()) return;
             
             addMessage(message, 'user');
             messageInput.value = '';
             setLoading(true);
+            addTypingIndicator();
             
             try {
                 const response = await fetch('/api/chat', {
@@ -136,6 +170,7 @@
                     body: JSON.stringify({ message })
                 });
                 
+                removeTypingIndicator();
                 const data = await response.json();
                 
                 if (data.error) {
@@ -144,10 +179,23 @@
                     addMessage(data.response, 'assistant');
                 }
             } catch (e) {
+                removeTypingIndicator();
                 addMessage(`Error: ${e.message}`, 'error');
             } finally {
                 setLoading(false);
                 messageInput.focus();
+            }
+        }
+
+        chatForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await sendMessage(messageInput.value.trim());
+        });
+
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('quick-btn')) {
+                const msg = e.target.getAttribute('data-msg');
+                if (msg) sendMessage(msg);
             }
         });
         
@@ -158,6 +206,12 @@
                     <div class="message assistant">
                         <div class="message-content">
                             Chat reset! How can I help you with your Minima node?
+                            <div class="quick-actions">
+                                <button class="quick-btn" data-msg="What's my balance?">Balance</button>
+                                <button class="quick-btn" data-msg="Show node status">Status</button>
+                                <button class="quick-btn" data-msg="What's my MxID?">MxID</button>
+                                <button class="quick-btn" data-msg="List my contacts">Contacts</button>
+                            </div>
                         </div>
                     </div>
                 `;
