@@ -84,18 +84,27 @@ generate_secure_password() {
 }
 
 # Check if MDS_PASSWORD is set
+MDS_PASS_FILE="$SCRIPT_DIR/.mds_password"
+
 if [[ -z "$MDS_PASSWORD" ]]; then
-    echo ""
-    echo "WARNING: MDS_PASSWORD not set. Generating secure password..."
-    MDS_PASSWORD="$(generate_secure_password)"
-    echo ""
-    echo "============================================"
-    echo "GENERATED MDS PASSWORD (save this securely):"
-    echo "$MDS_PASSWORD"
-    echo "============================================"
-    echo ""
-    echo "To set permanently, add MDS_PASSWORD to your secrets."
-    echo ""
+    if [[ -f "$MDS_PASS_FILE" ]]; then
+        MDS_PASSWORD="$(cat "$MDS_PASS_FILE")"
+        echo "MDS password loaded from $MDS_PASS_FILE"
+    else
+        echo ""
+        echo "WARNING: MDS_PASSWORD not set. Generating secure password..."
+        MDS_PASSWORD="$(generate_secure_password)"
+        echo "$MDS_PASSWORD" > "$MDS_PASS_FILE"
+        chmod 600 "$MDS_PASS_FILE"
+        echo ""
+        echo "============================================"
+        echo "MDS password saved to: $MDS_PASS_FILE"
+        echo "(file is permissions-restricted to owner only)"
+        echo "To view:  cat $MDS_PASS_FILE"
+        echo "To set permanently, add MDS_PASSWORD to your secrets."
+        echo "============================================"
+        echo ""
+    fi
 fi
 
 # Validate password entropy

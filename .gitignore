@@ -1,5 +1,7 @@
 minima/data/
 minima/minima.jar
+minima/.mds_password
+chat/.session_secret
 attached_assets/
 *.class
 *.log

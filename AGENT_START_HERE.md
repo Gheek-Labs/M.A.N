@@ -96,6 +96,15 @@ Once all 5 steps are complete, your node is bootstrapped, backed up, and has a s
 | Response schemas (25 commands) | [`minima/RESPONSE_SCHEMAS.md`](minima/RESPONSE_SCHEMAS.md) |
 | Agent integration skill (for Replit Agent) | [`.agents/skills/minima-integration/SKILL.md`](.agents/skills/minima-integration/SKILL.md) |
 
+## Network Security
+
+| Port | Service | Binding | Exposure |
+|------|---------|---------|----------|
+| 9001 | P2P | All interfaces | **Intentionally open** — required for blockchain peer discovery |
+| 9003 | MDS | All interfaces (SSL) | Password-protected; block at firewall if not needed externally |
+| 9005 | RPC | All interfaces | **No authentication** — must be firewall-restricted in production. On Replit, only port 5000 is externally exposed, so 9005 is safe. On bare metal/VPS, block 9005 at your firewall. |
+| 5000 | Chat UI (Flask) | All interfaces | Public web interface; no sensitive operations without confirmation |
+
 ## Common Bootstrap Mistakes
 
 | Mistake | Consequence | Fix |

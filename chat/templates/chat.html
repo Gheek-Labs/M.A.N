@@ -114,9 +114,13 @@
                 ph(`<pre><code>${esc(code)}</code></pre>`)
             );
             
-            text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_, label, url) => 
-                ph(`<a href="${esc(url.trim())}" target="_blank" rel="noopener">${esc(label)}</a>`)
-            );
+            text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_, label, url) => {
+                const cleanUrl = url.trim();
+                if (/^javascript:/i.test(cleanUrl) || /^data:/i.test(cleanUrl) || /^vbscript:/i.test(cleanUrl)) {
+                    return esc(label);
+                }
+                return ph(`<a href="${esc(cleanUrl)}" target="_blank" rel="noopener noreferrer">${esc(label)}</a>`);
+            });
             
             text = esc(text);
             
@@ -174,7 +178,8 @@
                 const data = await response.json();
                 
                 if (data.error) {
-                    addMessage(`Error: ${data.error}`, 'error');
+                    const safeErr = String(data.error).replace(/</g,'&lt;').replace(/>/g,'&gt;');
+                    addMessage(`Error: ${safeErr}`, 'error');
                 } else {
                     addMessage(data.response, 'assistant');
                 }

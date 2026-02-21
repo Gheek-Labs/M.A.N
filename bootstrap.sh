@@ -6,6 +6,13 @@ echo "  Agent-Friendly Headless Setup"
 echo "=============================================="
 echo ""
 
+AUTO_INSTALL=false
+for arg in "$@"; do
+    case "$arg" in
+        --yes|-y) AUTO_INSTALL=true ;;
+    esac
+done
+
 MINIMA_DIR="$(dirname "$0")/minima"
 JAR_PATH="$MINIMA_DIR/minima.jar"
 JAR_URL="https://github.com/minima-global/Minima/raw/master/jar/minima.jar"
@@ -83,6 +90,27 @@ if [ "$NEED_JAVA" = "1" ] || [ "$NEED_JQ" = "1" ] || [ "$NEED_CURL" = "1" ]; the
     [ "$NEED_JQ" = "1" ] && echo "  - jq (needed for MxID)"
     [ "$NEED_CURL" = "1" ] && echo "  - curl (needed to download JAR)"
     echo ""
+    if [ "$AUTO_INSTALL" = "false" ]; then
+        echo "This script can attempt to install them automatically."
+        echo "It will use your system package manager (apt/brew/dnf/pacman/apk)."
+        echo ""
+        printf "Install missing dependencies now? [y/N] "
+        read -r answer
+        case "$answer" in
+            [yY]|[yY][eE][sS]) ;;
+            *)
+                echo ""
+                echo "Aborted. Install manually and re-run ./bootstrap.sh"
+                echo "  Debian/Ubuntu:  apt install -y openjdk-17-jre-headless jq curl"
+                echo "  macOS:          brew install openjdk@17 jq curl"
+                echo "  Replit (Nix):   Add jdk and jq to system packages"
+                echo ""
+                echo "Or re-run with: ./bootstrap.sh --yes"
+                exit 1
+                ;;
+        esac
+    fi
+
     echo "Attempting auto-install..."
 
     if install_missing_deps "$NEED_JAVA" "$NEED_JQ" "$NEED_CURL"; then

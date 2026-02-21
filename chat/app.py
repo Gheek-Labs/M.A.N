@@ -1,15 +1,43 @@
 import os
+import secrets
 from flask import Flask, render_template, request, jsonify, make_response
 
 app = Flask(__name__)
-app.secret_key = os.environ.get("SESSION_SECRET", "dev-secret-key")
+
+_secret_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".session_secret")
+
+def _get_session_secret():
+    env_secret = os.environ.get("SESSION_SECRET")
+    if env_secret:
+        return env_secret
+    if os.path.exists(_secret_file):
+        with open(_secret_file, "r") as f:
+            return f.read().strip()
+    generated = secrets.token_hex(32)
+    with open(_secret_file, "w") as f:
+        f.write(generated)
+    os.chmod(_secret_file, 0o600)
+    return generated
+
+app.secret_key = _get_session_secret()
 
 @app.after_request
 def add_header(response):
-    """Add headers to disable caching."""
+    """Add security and cache headers."""
     response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
     response.headers["Pragma"] = "no-cache"
     response.headers["Expires"] = "0"
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "SAMEORIGIN"
+    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    response.headers["Content-Security-Policy"] = (
+        "default-src 'self'; "
+        "script-src 'self' 'unsafe-inline'; "
+        "style-src 'self' 'unsafe-inline'; "
+        "img-src 'self' data:; "
+        "connect-src 'self'; "
+        "frame-ancestors 'self' https://*.replit.dev https://*.repl.co"
+    )
     return response
 
 agent = None
