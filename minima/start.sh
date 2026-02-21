@@ -143,6 +143,36 @@ echo "MDS Port:       $MDS_PORT (SSL, password-protected)"
 echo "MDS Password:   [SET - validated]"
 echo ""
 
+PEERS_URL="https://www.spartacusrex.com/minimapeers.txt"
+
+import_peers() {
+    echo ""
+    echo "Waiting for RPC to become available before importing peers..."
+    local attempts=0
+    while [ $attempts -lt 30 ]; do
+        if curl -s "http://localhost:${RPC_PORT}/status" >/dev/null 2>&1; then
+            echo "RPC is ready. Downloading peer list from $PEERS_URL ..."
+            local peers
+            peers=$(curl -s "$PEERS_URL" 2>/dev/null)
+            if [ -n "$peers" ]; then
+                local encoded
+                encoded=$(python3 -c "import sys, urllib.parse; print(urllib.parse.quote(sys.argv[1], safe=''))" "peers action:addpeers peerslist:${peers}" 2>/dev/null)
+                local result
+                result=$(curl -s "http://localhost:${RPC_PORT}/${encoded}" 2>/dev/null)
+                echo "Peer import result: $result"
+            else
+                echo "WARNING: Could not download peers list. Node will rely on default bootstrap peer."
+            fi
+            return
+        fi
+        attempts=$((attempts + 1))
+        sleep 2
+    done
+    echo "WARNING: RPC did not become available within 60s. Skipping peer import."
+}
+
+import_peers &
+
 exec java -Xmx1G -jar "$JAR_PATH" \
     -data "$DATA_DIR" \
     -basefolder "$DATA_DIR" \

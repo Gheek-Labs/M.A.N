@@ -32,7 +32,8 @@ The system is designed around a Minima blockchain node, enhanced with several la
 - **Response Schemas**: Detailed machine-readable JSON schemas and human-readable documentation are provided for all RPC command responses, specifying field semantics, types, and agent warnings to ensure correct interpretation.
 
 ### Feature Specifications
-- **One-Click Bootstrap**: A `bootstrap.sh` script automates the setup process, including downloading the Minima JAR and installing prerequisites.
+- **One-Click Bootstrap**: A `bootstrap.sh` script automates the setup process, including downloading the Minima JAR and installing prerequisites. It provides instructions for automatic peer import on startup.
+- **Automatic Peer Import**: On startup, `start.sh` downloads the current peer list from `https://www.spartacusrex.com/minimapeers.txt` and imports them via RPC (`peers action:addpeers`) once the node is ready, supplementing the default bootstrap peer.
 - **Mandatory Bootstrap Sequence**: A defined 5-step sequence ensures proper node initialization, seed phrase backup, MxID setup, and peer connectivity verification.
 - **Secure Chat Interface**: The chat interface is disabled by default and requires explicit enablement with a strong password. It includes CSRF protection on all forms, session regeneration on login, rate limiting (20 req/60s general, 5 req/5min login), input character limits (2000 chars), Secure cookies when remote-accessible, and command normalization to prevent case/whitespace bypass.
 - **MLS Auto-Detection**: The MxID setup intelligently detects if the node can act as its own MLS (Message Layer Security) based on network configuration.
