@@ -4,6 +4,18 @@
 
 Skipping these steps will result in an unstable node, missing identity, and no backup.
 
+## System Prerequisites
+
+Minima requires these system packages installed **before** bootstrap:
+
+| Package | Purpose | Replit (Nix) | Debian/Ubuntu |
+|---------|---------|-------------|---------------|
+| **Java (OpenJDK 17+)** | Runs the Minima JAR | `jdk` | `openjdk-17-jre-headless` |
+| **jq** | JSON parsing for MxID scripts | `jq` | `jq` |
+| **curl** | Downloads JAR and RPC calls | `curl` (usually pre-installed) | `curl` |
+
+On Replit, these are installed as Nix system packages. The bootstrap script checks for all three and will fail with a clear error if any are missing.
+
 ## Mandatory Bootstrap Sequence
 
 ### Step 1: Initialize the node
@@ -12,7 +24,7 @@ Skipping these steps will result in an unstable node, missing identity, and no b
 ./bootstrap.sh
 ```
 
-This downloads the Minima JAR (~70MB on first run) and prepares the environment.
+This checks prerequisites, downloads the Minima JAR (~70MB on first run), and prepares the environment. If it reports missing dependencies, install them first.
 
 ### Step 2: Start the node
 

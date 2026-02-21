@@ -10,6 +10,13 @@ MDS_PORT=9003
 
 mkdir -p "$DATA_DIR"
 
+if ! command -v java &> /dev/null; then
+    echo "ERROR: Java is not installed. Minima requires OpenJDK 17+."
+    echo "Run ./bootstrap.sh first — it will check all prerequisites."
+    echo "Or install manually: nix package 'jdk' on Replit, or 'apt install openjdk-17-jre-headless' on Debian/Ubuntu."
+    exit 1
+fi
+
 if [ ! -f "$JAR_PATH" ]; then
     echo "minima.jar not found. Downloading from GitHub..."
     if command -v curl &> /dev/null; then
