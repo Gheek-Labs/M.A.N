@@ -44,7 +44,7 @@ if [ -z "$1" ]; then
 fi
 
 COMMAND="$*"
-ENCODED_CMD=$(echo "$COMMAND" | sed 's/ /%20/g')
+ENCODED_CMD=$(python3 -c "import sys, urllib.parse; print(urllib.parse.quote(sys.argv[1], safe=''))" "$COMMAND" 2>/dev/null || echo "$COMMAND" | sed 's/ /%20/g; s/{/%7B/g; s/}/%7D/g; s/"/%22/g; s/:/%3A/g; s/,/%2C/g; s/\[/%5B/g; s/\]/%5D/g')
 
 RESPONSE=$(curl -s "${RPC_URL}/${ENCODED_CMD}" 2>/dev/null)
 

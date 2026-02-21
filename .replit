@@ -65,3 +65,9 @@ externalPort = 3002
 [nix]
 channel = "stable-25_05"
 packages = ["jq", "jdk"]
+
+[userenv]
+
+[userenv.development]
+ENABLE_CHAT = "true"
+CHAT_BIND = "0.0.0.0"

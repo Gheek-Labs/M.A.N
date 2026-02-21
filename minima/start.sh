@@ -33,6 +33,25 @@ if [ ! -f "$JAR_PATH" ]; then
         exit 1
     fi
     echo "Download complete!"
+
+    CHECKSUM_FILE="$SCRIPT_DIR/minima.jar.sha256"
+    if [ -f "$CHECKSUM_FILE" ]; then
+        EXPECTED=$(awk '{print $1}' "$CHECKSUM_FILE")
+        ACTUAL=$(sha256sum "$JAR_PATH" | awk '{print $1}')
+        if [ "$EXPECTED" != "$ACTUAL" ]; then
+            echo "ERROR: SHA256 checksum mismatch for minima.jar!"
+            echo "  Expected: $EXPECTED"
+            echo "  Got:      $ACTUAL"
+            echo "The downloaded file may be corrupted or tampered with."
+            echo "Delete minima.jar and update minima.jar.sha256 if upgrading."
+            rm -f "$JAR_PATH"
+            exit 1
+        fi
+        echo "SHA256 checksum verified."
+    else
+        echo "WARNING: No checksum file found. Skipping integrity verification."
+        echo "  Create minima/minima.jar.sha256 for download verification."
+    fi
     echo ""
 fi
 

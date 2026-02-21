@@ -116,7 +116,7 @@ if [ -z "$ADDRESS" ]; then
     exit 1
 fi
 
-STATE_JSON="{\"${PORT}\":\"${DATA}\",\"255\":\"${TIMESTAMP}\"}"
+STATE_JSON=$(jq -n --arg port "$PORT" --arg data "$DATA" --arg ts "$TIMESTAMP" '{($port): $data, "255": $ts}')
 
 CMD="send address:${ADDRESS} amount:${RECORD_AMOUNT} state:${STATE_JSON}"
 

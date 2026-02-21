@@ -332,8 +332,7 @@ def execute_command(command: str) -> Dict[str, Any]:
             return result
 
         else:
-            result = _client.command(command)
-            return result
+            return {"status": False, "error": f"Unknown command: {base}. Use 'help' to see available commands."}
 
     except MinimaConnectionError as e:
         return {"status": False, "error": f"Node not reachable: {e}. Is the Minima node running?"}
