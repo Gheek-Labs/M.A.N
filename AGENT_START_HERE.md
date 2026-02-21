@@ -14,7 +14,7 @@ Minima requires these system packages installed **before** bootstrap:
 | **jq** | JSON parsing for MxID scripts | `jq` | `jq` |
 | **curl** | Downloads JAR and RPC calls | `curl` (usually pre-installed) | `curl` |
 
-On Replit, these are installed as Nix system packages. The bootstrap script checks for all three and will fail with a clear error if any are missing.
+**The bootstrap script auto-detects your platform and installs missing dependencies automatically.** It supports apt (Debian/Ubuntu), brew (macOS), dnf (Fedora/RHEL), pacman (Arch), and apk (Alpine). On Replit, Java and jq are pre-installed as Nix system packages.
 
 ## Mandatory Bootstrap Sequence
 
@@ -100,6 +100,7 @@ Once all 5 steps are complete, your node is bootstrapped, backed up, and has a s
 
 | Mistake | Consequence | Fix |
 |---------|-------------|-----|
+| Java not installed | `java: not found` when starting node | `./bootstrap.sh` auto-installs it; or manually: `apt install openjdk-17-jre-headless` |
 | Skipping backup | Seed phrase lost forever if node data corrupted | Run `vault` immediately after first start |
 | Skipping MxID | No stable identity; Maxima address rotates every few minutes | Run `mxid_init.sh` after backup |
 | Using SDK before node is running | `ECONNREFUSED` on port 9005 | Start node first, verify with `cli.sh status` |

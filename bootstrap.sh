@@ -12,31 +12,113 @@ JAR_URL="https://github.com/minima-global/Minima/raw/master/jar/minima.jar"
 
 echo "Checking prerequisites..."
 
-MISSING=()
+install_missing_deps() {
+    local need_java="$1"
+    local need_jq="$2"
+    local need_curl="$3"
+
+    if command -v apt-get &> /dev/null; then
+        echo "  Detected Debian/Ubuntu — installing via apt..."
+        local pkgs=()
+        [ "$need_java" = "1" ] && pkgs+=("openjdk-17-jre-headless")
+        [ "$need_jq" = "1" ] && pkgs+=("jq")
+        [ "$need_curl" = "1" ] && pkgs+=("curl")
+        if [ "$(id -u)" -eq 0 ]; then
+            apt-get update -qq && apt-get install -y -qq "${pkgs[@]}"
+        else
+            sudo apt-get update -qq && sudo apt-get install -y -qq "${pkgs[@]}"
+        fi
+    elif command -v brew &> /dev/null; then
+        echo "  Detected macOS/Homebrew — installing via brew..."
+        [ "$need_java" = "1" ] && brew install openjdk@17
+        [ "$need_jq" = "1" ] && brew install jq
+        [ "$need_curl" = "1" ] && brew install curl
+    elif command -v pacman &> /dev/null; then
+        echo "  Detected Arch — installing via pacman..."
+        local pkgs=()
+        [ "$need_java" = "1" ] && pkgs+=("jre-openjdk")
+        [ "$need_jq" = "1" ] && pkgs+=("jq")
+        [ "$need_curl" = "1" ] && pkgs+=("curl")
+        sudo pacman -Sy --noconfirm "${pkgs[@]}"
+    elif command -v dnf &> /dev/null; then
+        echo "  Detected Fedora/RHEL — installing via dnf..."
+        local pkgs=()
+        [ "$need_java" = "1" ] && pkgs+=("java-17-openjdk-headless")
+        [ "$need_jq" = "1" ] && pkgs+=("jq")
+        [ "$need_curl" = "1" ] && pkgs+=("curl")
+        sudo dnf install -y "${pkgs[@]}"
+    elif command -v apk &> /dev/null; then
+        echo "  Detected Alpine — installing via apk..."
+        local pkgs=()
+        [ "$need_java" = "1" ] && pkgs+=("openjdk17-jre-headless")
+        [ "$need_jq" = "1" ] && pkgs+=("jq")
+        [ "$need_curl" = "1" ] && pkgs+=("curl")
+        apk add --no-cache "${pkgs[@]}"
+    else
+        return 1
+    fi
+    return 0
+}
+
+NEED_JAVA=0
+NEED_JQ=0
+NEED_CURL=0
 
 if ! command -v java &> /dev/null; then
-    MISSING+=("java (OpenJDK 17+)")
+    NEED_JAVA=1
 fi
 
 if ! command -v jq &> /dev/null; then
-    MISSING+=("jq (needed for MxID)")
+    NEED_JQ=1
 fi
 
 if ! command -v curl &> /dev/null && ! command -v wget &> /dev/null; then
-    MISSING+=("curl or wget (needed to download JAR)")
+    NEED_CURL=1
 fi
 
-if [ ${#MISSING[@]} -gt 0 ]; then
+if [ "$NEED_JAVA" = "1" ] || [ "$NEED_JQ" = "1" ] || [ "$NEED_CURL" = "1" ]; then
     echo ""
-    echo "ERROR: Missing required system dependencies:"
-    for dep in "${MISSING[@]}"; do
-        echo "  - $dep"
-    done
+    echo "Missing dependencies detected:"
+    [ "$NEED_JAVA" = "1" ] && echo "  - java (OpenJDK 17+)"
+    [ "$NEED_JQ" = "1" ] && echo "  - jq (needed for MxID)"
+    [ "$NEED_CURL" = "1" ] && echo "  - curl (needed to download JAR)"
     echo ""
-    echo "Install them before continuing. On Replit, use the packager tool."
-    echo "On Debian/Ubuntu: apt install -y openjdk-17-jre-headless jq curl"
-    echo "On NixOS/Replit: nix packages jdk jq"
-    exit 1
+    echo "Attempting auto-install..."
+
+    if install_missing_deps "$NEED_JAVA" "$NEED_JQ" "$NEED_CURL"; then
+        echo ""
+        echo "Auto-install completed. Re-checking..."
+        STILL_MISSING=()
+        if [ "$NEED_JAVA" = "1" ] && ! command -v java &> /dev/null; then
+            STILL_MISSING+=("java (OpenJDK 17+)")
+        fi
+        if [ "$NEED_JQ" = "1" ] && ! command -v jq &> /dev/null; then
+            STILL_MISSING+=("jq")
+        fi
+        if [ "$NEED_CURL" = "1" ] && ! command -v curl &> /dev/null && ! command -v wget &> /dev/null; then
+            STILL_MISSING+=("curl or wget")
+        fi
+        if [ ${#STILL_MISSING[@]} -gt 0 ]; then
+            echo "ERROR: Auto-install did not fully succeed. Still missing:"
+            for dep in "${STILL_MISSING[@]}"; do
+                echo "  - $dep"
+            done
+            echo ""
+            echo "Please install manually and re-run ./bootstrap.sh"
+            exit 1
+        fi
+    else
+        echo "ERROR: Could not detect a supported package manager."
+        echo ""
+        echo "Please install these manually and re-run ./bootstrap.sh:"
+        echo "  Debian/Ubuntu:  apt install -y openjdk-17-jre-headless jq curl"
+        echo "  macOS:          brew install openjdk@17 jq curl"
+        echo "  Fedora/RHEL:    dnf install -y java-17-openjdk-headless jq curl"
+        echo "  Alpine:         apk add openjdk17-jre-headless jq curl"
+        echo "  Arch:           pacman -S jre-openjdk jq curl"
+        echo "  Replit (Nix):   Add jdk and jq to system packages"
+        exit 1
+    fi
 fi
 
 JAVA_VER=$(java -version 2>&1 | head -1)
